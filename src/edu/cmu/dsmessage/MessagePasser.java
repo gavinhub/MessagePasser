@@ -20,14 +20,23 @@ public class MessagePasser {
         speaker.start();
     }
 
+    /**
+     * Add a message to the send queue. every thing in the queue will be sent.
+     * @param msg
+     */
     public void send(Message msg) {
         // TODO: send messages according to the information stored in the Message object
         // TODO: remember to check the rules before sending.
+        this.controller.appendSendingMessage(msg);
     }
 
-    public Message receive() {
-        // TODO: poll messages from the queue.
-        return null;
+    /**
+     * poll out an element from the top of the queue.
+     * @return
+     */
+    public Message receive() throws InterruptedException{
+        // TODO: poll messages from the queue. You should check against the rolls. If dropped, poll next one.
+        return controller.takeReceivedMessage();
     }
 
 }

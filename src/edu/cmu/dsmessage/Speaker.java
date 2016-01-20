@@ -18,21 +18,10 @@ class Speaker implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             try {
-                System.out.print(">>");
-                String input = keyIn.readLine();
-                if (input == null) {
-                    break;
-                }
-                String name = input.split(" ")[0];
+                Message msg = this.ctrl.retrieveSendingMsg();
+                String name = msg.getTargetName();
                 ObjectOutputStream oStream = this.ctrl.getOutputStream(name);
                 if (oStream == null) {
                     Host targetHost = this.ctrl.lookUpHost(name);
@@ -48,7 +37,6 @@ class Speaker implements Runnable {
                     Thread session = new Thread(new ListenSession(this.ctrl, iStream));
                     session.start();
                 }
-                Message msg = new Message(this.ctrl.getMyName(), name, input);
                 oStream.writeObject(msg);
             } catch (IOException | StreamNotFoundException | ClassNotFoundException e) {
                 e.printStackTrace();

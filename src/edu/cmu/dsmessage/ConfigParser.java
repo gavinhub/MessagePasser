@@ -11,7 +11,6 @@ import java.util.Map;
  * Created by gavin on 1/17/16.
  */
 class ConfigParser {
-    private Host myself;
     private Map<String, Host> hosts;
 
     public ConfigParser(String configFile) throws ParseException {

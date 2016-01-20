@@ -23,7 +23,7 @@ class ListenSession implements Runnable {
         try {
             while (true) {
                 Message msg = (Message)this.iStream.readObject();
-                this.ctrl.handleMessage(msg);
+                this.ctrl.appendReceivedMessage(msg);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
