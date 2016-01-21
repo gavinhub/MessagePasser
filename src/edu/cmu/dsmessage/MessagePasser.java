@@ -22,17 +22,19 @@ public class MessagePasser {
 
     /**
      * Add a message to the send queue. every thing in the queue will be sent.
-     * @param msg
+     * @param msg the message to be sent
      */
     public void send(Message msg) {
-        // TODO: send messages according to the information stored in the Message object
-        // TODO: remember to check the rules before sending.
+        /*
+        TODO: send messages according to the information stored in the Message object
+        TODO: remember to check the rules before sending.
+        */
         this.controller.appendSendingMessage(msg);
     }
 
     /**
      * poll out an element from the top of the queue.
-     * @return
+     * @return Message
      */
     public Message receive() throws InterruptedException{
         // TODO: poll messages from the queue. You should check against the rolls. If dropped, poll next one.
