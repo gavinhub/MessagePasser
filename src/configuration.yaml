@@ -1,0 +1,37 @@
+configuration :
+  - name : alice
+    ip : 127.0.0.1
+    port : 12344 
+  - name : bob
+    ip : 127.0.0.1
+    port : 14255
+  - name : charlie
+    ip : 127.0.0.1
+    port : 12998
+  - name : daphnie
+    ip : 127.0.0.1
+    port : 1987
+
+sendRules :
+  - action : drop 
+    src : bob
+    dest : alice
+    kind : Ack
+    seqNum : 4
+  - action : dropAfter 
+    kind : Reply
+    src : daphnie
+    seqNum : 6
+  - action : drop
+    src : bob
+    dest : daphnie
+    kind : Ack
+    seqNum : 7
+  - action : dropAfter 
+    kind : Reply
+    src : alice
+    seqNum : 2
+
+receiveRules :
+  - action : delay # Everyone sees two copies of charlie's messages
+    src : charlie # even though he only sends one
