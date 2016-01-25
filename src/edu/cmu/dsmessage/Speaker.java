@@ -4,6 +4,7 @@ package edu.cmu.dsmessage;
 import edu.cmu.dsmessage.except.StreamNotFoundException;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 /**
@@ -34,12 +35,18 @@ class Speaker implements Runnable {
                     this.ctrl.handleMessage(response);
                     this.ctrl.addOutputStream(name, oStream);
                     this.ctrl.addInputStream(name, iStream);
-                    Thread session = new Thread(new ListenSession(this.ctrl, iStream));
+                    Thread session = new Thread(new ListenSession(this.ctrl, name, iStream));
                     session.start();
                 }
                 oStream.writeObject(msg);
-            } catch (IOException | StreamNotFoundException | ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException | ClassNotFoundException e) {
+                if (e instanceof ConnectException) {
+                    System.out.println("[Exception] The other one is not ready.");
+                } else {
+                    e.printStackTrace();
+                }
+            } catch (StreamNotFoundException e) {
+                System.out.println(e.getMessage());
             }
         }
     }

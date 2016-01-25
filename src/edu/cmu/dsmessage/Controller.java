@@ -97,6 +97,13 @@ class Controller {
         return host.getOutputStream();
     }
 
+    public void removeStreams(String name) {
+        Host host = this.hosts.get(name);
+        if (host == null) return;
+        host.setInputStream(null);
+        host.setOutputStream(null);
+    }
+
     /**
      * Find a host by name.
      * @param name the name of the host

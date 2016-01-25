@@ -2,6 +2,7 @@ package edu.cmu.dsmessage;
 
 import edu.cmu.dsmessage.except.StreamNotFoundException;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,10 +14,12 @@ import java.net.Socket;
 class ListenSession implements Runnable {
     private Controller ctrl;
     private ObjectInputStream iStream;
+    private String myName;
 
-    public ListenSession(Controller ctrl, ObjectInputStream iStream) {
+    public ListenSession(Controller ctrl, String myName, ObjectInputStream iStream) {
         this.ctrl = ctrl;
         this.iStream = iStream;
+        this.myName = myName;
     }
 
     public void run() {
@@ -26,6 +29,10 @@ class ListenSession implements Runnable {
                 this.ctrl.appendReceivedMessage(msg);
             }
         } catch (IOException | ClassNotFoundException e) {
+            if (e instanceof EOFException) {
+                this.ctrl.removeStreams(this.myName);
+                return;
+            }
             e.printStackTrace();
         }
     }

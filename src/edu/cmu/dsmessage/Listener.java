@@ -42,7 +42,7 @@ class Listener implements Runnable{
                 this.ctrl.handleMessage(firstMessage); // deliver the first coming message
                 this.ctrl.addInputStream(firstMessage.getSourceName(), iStream);
 
-                Thread talk = new Thread(new ListenSession(this.ctrl, iStream));
+                Thread talk = new Thread(new ListenSession(this.ctrl, firstMessage.getSourceName(), iStream));
                 talk.start();
             }
         } catch (IOException | ClassNotFoundException | StreamNotFoundException e) {
