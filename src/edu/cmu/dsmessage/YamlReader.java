@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
-public class YamlReader {
+class YamlReader {
 	
 	@SuppressWarnings("unchecked")
 	protected ArrayList<Map<String, Object>> getConfig(String file) throws FileNotFoundException {
