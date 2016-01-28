@@ -51,7 +51,7 @@ public class Main {
             	System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
             } else {            
 	            String name = input.split(" ")[0];
-	            String content = input.split(" ", 1)[1]; // Update 01/28
+	            String content = input.split(" ", 2)[1]; // Update 01/28
 	            Message msg = new Message(myName, name, content);
 	            passer.send(msg);
             }
