@@ -14,7 +14,7 @@ public class Main {
         String myName = args[1];
 
         MessagePasser passer = new MessagePasser(configFile, myName);
-
+        
         /*
         Thread display = new Thread() {
             public void run() {
@@ -37,7 +37,7 @@ public class Main {
         BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
         while (true)
         try {
-            Thread.sleep(500);
+            Thread.sleep(250);
             System.out.print(">> ");
             String input = keyIn.readLine();
             if (input == null) {

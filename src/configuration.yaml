@@ -19,20 +19,22 @@ sendRules :
   - action : drop 
     src : bob
     dest : alice
-    kind : Ack
-    seqNum : 4
+
   - action : dropAfter
-    kind : Reply
     src : deadpool
     seqNum : 6
-  - action : drop
-    src : bob
-    dest : deadpool
-    kind : Ack
-    seqNum : 7
+ 
   - action : delay
     src : deadpool
+    dest : alice
+
+  - action : delay
+    dest : bob
 
 receiveRules :
   - action : delay
     src : charlie
+
+  - action : delay
+    src : bob
+    dest : deadpool
