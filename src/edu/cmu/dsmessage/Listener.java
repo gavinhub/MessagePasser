@@ -39,7 +39,8 @@ class Listener implements Runnable{
                 ObjectInputStream iStream = new ObjectInputStream(coming.getInputStream());
                 Message firstMessage = (Message) iStream.readObject();
                 this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream);
-                this.ctrl.handleMessage(firstMessage); // deliver the first coming message
+                // this.ctrl.handleMessage(firstMessage); // deliver the first coming message
+                this.ctrl.appendReceivedMessage(firstMessage);
                 this.ctrl.addInputStream(firstMessage.getSourceName(), iStream);
 
                 Thread talk = new Thread(new ListenSession(this.ctrl, firstMessage.getSourceName(), iStream));
