@@ -30,7 +30,7 @@ sendRules :
     dest : deadpool
     kind : Ack
     seqNum : 7
-    - action : delay
+  - action : delay
     src : deadpool
 
 receiveRules :
