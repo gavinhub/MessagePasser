@@ -37,12 +37,14 @@ public class Main {
         BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
         while (true)
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
             System.out.print(">> ");
             String input = keyIn.readLine();
             if (input == null) {
                 break;
             }
+            if (input.trim().equals(""))
+                continue;
             
             if (input.equals("receive")) {
             	Message msg = passer.receive();

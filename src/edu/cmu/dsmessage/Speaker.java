@@ -33,8 +33,8 @@ class Speaker implements Runnable {
                     oStream = new ObjectOutputStream(socket.getOutputStream());
 
                     this.ctrl.handleMessage(response);
-                    this.ctrl.addOutputStream(name, oStream);
-                    this.ctrl.addInputStream(name, iStream);
+                    this.ctrl.addOutputStream(name, oStream, this.ctrl.getMyName());
+                    this.ctrl.addInputStream(name, iStream, this.ctrl.getMyName());
                     Thread session = new Thread(new ListenSession(this.ctrl, name, iStream));
                     session.start();
                 }

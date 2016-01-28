@@ -73,16 +73,16 @@ class Controller {
         receiveQueue.add(msg);
     }
 
-    public void addInputStream(String name, ObjectInputStream iStream) throws StreamNotFoundException {
+    public void addInputStream(String name, ObjectInputStream iStream, String connector) throws StreamNotFoundException {
         if (!this.hosts.containsKey(name))
             throw new StreamNotFoundException("Stream Not set");
-        this.hosts.get(name).setInputStream(iStream);
+        this.hosts.get(name).setInputStream(iStream, connector);
     }
 
-    public void addOutputStream(String name, ObjectOutputStream oStream) throws StreamNotFoundException {
+    public void addOutputStream(String name, ObjectOutputStream oStream, String connector) throws StreamNotFoundException {
         if (!this.hosts.containsKey(name))
             throw new StreamNotFoundException("Stream Not set");
-        this.hosts.get(name).setOutputStream(oStream);
+        this.hosts.get(name).setOutputStream(oStream, connector);
     }
 
     public ObjectInputStream getInputStream(String name) {
@@ -100,8 +100,7 @@ class Controller {
     public void removeStreams(String name) {
         Host host = this.hosts.get(name);
         if (host == null) return;
-        host.setInputStream(null);
-        host.setOutputStream(null);
+        host.detach();
     }
 
     /**

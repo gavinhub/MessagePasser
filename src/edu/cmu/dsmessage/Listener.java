@@ -38,10 +38,9 @@ class Listener implements Runnable{
                 System.out.println("Connection Request Accepted");
                 ObjectInputStream iStream = new ObjectInputStream(coming.getInputStream());
                 Message firstMessage = (Message) iStream.readObject();
-                this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream);
-                // this.ctrl.handleMessage(firstMessage); // deliver the first coming message
+                this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream, firstMessage.getSourceName());
                 this.ctrl.appendReceivedMessage(firstMessage);
-                this.ctrl.addInputStream(firstMessage.getSourceName(), iStream);
+                this.ctrl.addInputStream(firstMessage.getSourceName(), iStream, firstMessage.getSourceName());
 
                 Thread talk = new Thread(new ListenSession(this.ctrl, firstMessage.getSourceName(), iStream));
                 talk.start();

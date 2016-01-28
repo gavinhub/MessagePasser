@@ -15,10 +15,12 @@ public class Host {
     private ObjectInputStream iStream;
     private ObjectOutputStream oStream;
     private Integer seqNum;
+    private String connector;
 
     public Host(InetAddress addr, String name, int port) {
         this.addr = addr;
         this.hostname = name;
+        this.connector = null;
         this.port = port;
         this.oStream = null;
         this.iStream = null;
@@ -41,11 +43,15 @@ public class Host {
     	return this.seqNum;
     }
 
-    public void setInputStream(ObjectInputStream iStream) {
-        this.iStream = iStream;
+    public synchronized void setInputStream(ObjectInputStream iStream, String connector) {
+        if (this.connector == null || this.connector.compareTo(connector) < 0) {
+            this.connector = connector;
+            this.iStream = iStream;
+        }
     }
 
-    public void setOutputStream(ObjectOutputStream oStream) {
+    public synchronized void setOutputStream(ObjectOutputStream oStream, String connector) {
+        if (this.connector == null || this.connector.compareTo(connector) < 0)
         this.oStream = oStream;
     }
 
@@ -59,5 +65,11 @@ public class Host {
     
     public void increaseSeqNum() {
     	this.seqNum++;
+    }
+
+    public void detach() {
+        this.iStream = null;
+        this.oStream = null;
+        this.connector = null;
     }
 }
