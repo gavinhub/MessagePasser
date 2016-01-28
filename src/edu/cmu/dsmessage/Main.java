@@ -2,6 +2,7 @@ package edu.cmu.dsmessage;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.List;
 
 public class Main {
 
@@ -14,13 +15,16 @@ public class Main {
 
         MessagePasser passer = new MessagePasser(configFile, myName);
 
+        /*
         Thread display = new Thread() {
             public void run() {
                 while(true) {
                     try {
-                        Message msg = passer.receive();
-                        System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
+                    	Message msg = passer.receive();
+                    	System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
+                    	
                     } catch (InterruptedException e) {
+                    	System.out.println("Interrupted");
                         e.printStackTrace();
                         break;
                     }
@@ -28,6 +32,7 @@ public class Main {
             }
         };
         display.start();
+        */
 
         BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
         while (true)
@@ -38,9 +43,16 @@ public class Main {
             if (input == null) {
                 break;
             }
-            String name = input.split(" ")[0];
-            Message msg = new Message(myName, name, input);
-            passer.send(msg);
+            
+            if (input.equals("receive")) {
+            	Message msg = passer.receive();
+            	System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
+            } else {            
+	            String name = input.split(" ")[0];
+	            String content = input.split(" ")[1]; // Update 01/26
+	            Message msg = new Message(myName, name, content);
+	            passer.send(msg);
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

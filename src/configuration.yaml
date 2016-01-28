@@ -8,9 +8,12 @@ configuration :
   - name : charlie
     ip : 127.0.0.1
     port : 12998
-  - name : daphnie
+  - name : deadpool
     ip : 127.0.0.1
     port : 1987
+  - name : ed
+    ip : 127.0.0.1
+    port : 2016
 
 sendRules :
   - action : drop 
@@ -18,20 +21,22 @@ sendRules :
     dest : alice
     kind : Ack
     seqNum : 4
-  - action : dropAfter 
+  - action : dropAfter
     kind : Reply
-    src : daphnie
+    src : deadpool
     seqNum : 6
   - action : drop
     src : bob
-    dest : daphnie
+    dest : deadpool
     kind : Ack
     seqNum : 7
-  - action : dropAfter 
+  - action : dropAfter
     kind : Reply
     src : alice
     seqNum : 2
+  - action : delay
+    src : deadpool
 
 receiveRules :
-  - action : delay # Everyone sees two copies of charlie's messages
-    src : charlie # even though he only sends one
+  - action : delay
+    src : charlie

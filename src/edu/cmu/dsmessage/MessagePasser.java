@@ -2,6 +2,8 @@ package edu.cmu.dsmessage;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,16 +15,47 @@ public class MessagePasser {
     private Map<String, Set<String>> sendDropRules;
     private Map<String, Integer> sendDropAfterRules;
     private Map<String, Set<String>> receiveDropRules;
+    private Map<String, Integer> receiveDropAfterRules;
+    private Set<String> receiveDelayRules; // Update 01/25
+    private Set<String> sendDelayRules;
     private Integer sequence;
+    boolean isSendDelay; // Update 01/25
+    boolean isReceiveDelay; // Update 01/26
+    List<Message> sendDelayPool; // Update 01/26
+    List<Message> receiveDelayPool; // Update 01/25
 
     public MessagePasser(String configFile, String myName) throws ParseException, FileNotFoundException{
         ConfigParser parser = new ConfigParser(configFile);
         YamlReader reader = new YamlReader();
-        this.sendDropRules = reader.getSendDropRules(configFile);
-        this.sendDropAfterRules = reader.getSendDropAfterRules(configFile);
-        this.receiveDropRules = reader.getReceiveDropRules(configFile);
         
+        /* 
+         *  Initialize the global rules.
+         */
+        this.sendDropRules 			= reader.getSendDropRules(configFile);
+        this.sendDropAfterRules 	= reader.getSendDropAfterRules(configFile);
+        this.sendDelayRules 		= reader.getSendDelayRules(configFile);
+        this.receiveDropRules 		= reader.getReceiveDropRules(configFile);
+        this.receiveDropAfterRules 	= reader.getReceiveDropAfterRules(configFile);
+        this.receiveDelayRules 		= reader.getReceiveDelayRules(configFile); // Update 01/25
+        
+        for (String i : this.sendDelayRules) {
+        	System.out.println("sendDelayRules: ");
+        	System.out.print(i + "\t");
+        }
+        System.out.println();
+        for (String i : this.receiveDelayRules) {
+        	System.out.println("receiveDelayRules: ");
+        	System.out.println(i + "\t");
+        }
+        
+        /*
+         *  Initialize the local variables.
+         */
         this.sequence = 0;
+        this.isSendDelay = false; // Update 01/25
+        this.isReceiveDelay = false; // Update 01/26
+        this.sendDelayPool = new ArrayList<>(); // Update 01/26
+        this.receiveDelayPool = new ArrayList<>(); // Update 01/25
 
         this.controller = new Controller(parser, myName);
 
@@ -46,8 +79,12 @@ public class MessagePasser {
     	System.out.println("SeqNum = " + this.sequence);
     	String src = msg.getSourceName();
     	String dest = msg.getTargetName();
+    	    	
     	if (this.sendDropRules.containsKey(src)) {
-    		if (this.sendDropRules.get(src).contains(dest)) {
+    		if (this.sendDropRules.get(src) == null) {
+    			System.out.println("--------- Drop at sending ---------"); // For testing
+    			return;    			
+    		} else if (this.sendDropRules.get(src).contains(dest)) {
     			System.out.println("--------- Drop at sending ---------"); // For testing
     			return;
     		}
@@ -58,30 +95,73 @@ public class MessagePasser {
     			return;
     		}
     	}
+    	if (this.sendDelayRules.contains(src)) {
+    		System.out.println("--------- Send from " + src + " , Delay ---------");
+    		this.sendDelayPool.add(msg);
+    		return;
+    	}
+    	    	
         this.controller.appendSendingMessage(msg);
+        for (Message i : this.sendDelayPool) {
+        	this.controller.appendSendingMessage(i);
+        }
+        this.sendDelayPool.clear();
     }
 
     /**
      * poll out an element from the top of the queue.
-     * @return Message
+     * @return List<Message>
      */
     public Message receive() throws InterruptedException{
-        // TODO: poll messages from the queue. You should check against the rolls. If dropped, poll next one.
-    	System.out.println("SeqNum = " + this.sequence);
+//    	System.out.println("SeqNum = " + this.sequence);
+    	
+    	/*
+    	 *  First check whether it is currently blocking, 
+    	 *  if so, return the blocking message first.
+    	 */
+    	if (this.isReceiveDelay == true) {
+    		Message msg = this.receiveDelayPool.get(0);
+    		this.receiveDelayPool.remove(0);
+    		if (!this.receiveDelayPool.isEmpty()) {
+    			this.isReceiveDelay = false;
+    		}
+    		return msg;
+    	}
+    	
+    	
     	Message msg = controller.takeReceivedMessage();
     	String src = msg.getSourceName();
     	String dest = msg.getTargetName();
-    	if (this.receiveDropRules.containsKey(src)) {
-    		if (this.sendDropRules.get(src).contains(dest)) {
-    			System.out.println("--------- Drop at recieving ---------"); // For testing
-    			return null;
-    		}
+    	System.out.println("src = " + src + "\tdest = " + dest);
+    	
+    	/*
+    	 *  Drop the message meets the rules until the one doesn't.
+    	 */
+    	while (this.receiveDropRules.containsKey(src) && 
+ //   		   this.receiveDropRules.get(src) == null ||
+    		   this.receiveDropRules.get(src).contains(dest)) {
+			System.out.println("--------- Drop at recieving, src = " + src + ", dest = " + dest + " ---------"); // For testing
+		    msg = controller.takeReceivedMessage();
+		    src = msg.getSourceName();
+	    	dest = msg.getTargetName();
     	}
+    	
+    	while (this.receiveDelayRules.contains(src)) {
+    		System.out.println("--------- Receive from " + src + ", Delay ---------");
+    		this.receiveDelayPool.add(msg);
+    		msg = controller.takeReceivedMessage();
+    		src = msg.getSourceName();
+    		dest = msg.getTargetName();
+    		this.isReceiveDelay = true;
+    	}
+    	
+    	
         return msg;
-    }
+    } 
     
     private void increaseSeqNum() {
     	this.sequence++;
     }
+    
 
 }
