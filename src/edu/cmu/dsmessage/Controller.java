@@ -126,6 +126,10 @@ class Controller {
     public String getMyName() {
         return this.hosts.get(this.myName).getHostname();
     }
+    
+    public int getSeqNum(String dest) {
+    	return this.hosts.get(dest).getSeqNum();
+    }
 
     /**
      * Print out a message. Just a test method.
@@ -133,5 +137,9 @@ class Controller {
      */
     public void handleMessage(Message msg) {
         System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
+    }
+    
+    public void increaseSeqNum(String dest) {
+    	this.hosts.get(dest).increaseSeqNum();
     }
 }

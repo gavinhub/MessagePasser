@@ -14,6 +14,7 @@ public class Host {
     private String hostname;
     private ObjectInputStream iStream;
     private ObjectOutputStream oStream;
+    private Integer seqNum;
 
     public Host(InetAddress addr, String name, int port) {
         this.addr = addr;
@@ -21,6 +22,7 @@ public class Host {
         this.port = port;
         this.oStream = null;
         this.iStream = null;
+        this.seqNum = 0;
     }
 
     public InetAddress getAddr() {
@@ -33,6 +35,10 @@ public class Host {
 
     public int getPortNumber() {
         return this.port;
+    }
+    
+    public int getSeqNum() {
+    	return this.seqNum;
     }
 
     public void setInputStream(ObjectInputStream iStream) {
@@ -49,5 +55,9 @@ public class Host {
 
     public ObjectOutputStream getOutputStream() {
         return this.oStream;
+    }
+    
+    public void increaseSeqNum() {
+    	this.seqNum++;
     }
 }

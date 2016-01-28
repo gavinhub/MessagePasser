@@ -18,7 +18,6 @@ public class MessagePasser {
     private Map<String, Integer> receiveDropAfterRules;
     private Set<String> receiveDelayRules; // Update 01/25
     private Set<String> sendDelayRules;
-    private Integer sequence;
     boolean isSendDelay; // Update 01/25
     boolean isReceiveDelay; // Update 01/26
     List<Message> sendDelayPool; // Update 01/26
@@ -51,7 +50,6 @@ public class MessagePasser {
         /*
          *  Initialize the local variables.
          */
-        this.sequence = 0;
         this.isSendDelay = false; // Update 01/25
         this.isReceiveDelay = false; // Update 01/26
         this.sendDelayPool = new ArrayList<>(); // Update 01/26
@@ -75,10 +73,10 @@ public class MessagePasser {
         TODO: send messages according to the information stored in the Message object
         TODO: remember to check the rules before sending.
         */
-    	increaseSeqNum();
-    	System.out.println("SeqNum = " + this.sequence);
     	String src = msg.getSourceName();
     	String dest = msg.getTargetName();
+    	
+    	System.out.println("SeqNum = " + this.controller.getSeqNum(dest));
     	    	
     	if (this.sendDropRules.containsKey(src)) {
     		if (this.sendDropRules.get(src) == null) {
@@ -90,7 +88,7 @@ public class MessagePasser {
     		}
     	}
     	if (this.sendDropAfterRules.containsKey(src)) {
-    		if (this.sequence > this.sendDropAfterRules.get(src)) {
+    		if (controller.getSeqNum(dest) > this.sendDropAfterRules.get(src)) {
     			System.out.println("--------- DropAfter at sending ---------");
     			return;
     		}
@@ -98,9 +96,11 @@ public class MessagePasser {
     	if (this.sendDelayRules.contains(src)) {
     		System.out.println("--------- Send from " + src + " , Delay ---------");
     		this.sendDelayPool.add(msg);
+    		this.isSendDelay = true;
     		return;
     	}
-    	    	
+    	
+    	this.controller.increaseSeqNum(dest); // Increase the seqNum of specified dest. 	
         this.controller.appendSendingMessage(msg);
         for (Message i : this.sendDelayPool) {
         	this.controller.appendSendingMessage(i);
@@ -131,7 +131,6 @@ public class MessagePasser {
     	Message msg = controller.takeReceivedMessage();
     	String src = msg.getSourceName();
     	String dest = msg.getTargetName();
- //   	System.out.println("src = " + src + "\tdest = " + dest);
     	
     	/*
     	 *  Drop the message meets the rules until the one doesn't.
@@ -154,13 +153,8 @@ public class MessagePasser {
     		this.isReceiveDelay = true;
     	}
     	
-    	
         return msg;
     } 
-    
-    private void increaseSeqNum() {
-    	this.sequence++;
-    }
     
 
 }
