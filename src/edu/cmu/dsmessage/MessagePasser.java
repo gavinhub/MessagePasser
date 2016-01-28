@@ -113,7 +113,6 @@ public class MessagePasser {
      * @return List<Message>
      */
     public Message receive() throws InterruptedException{
-//    	System.out.println("SeqNum = " + this.sequence);
     	
     	/*
     	 *  First check whether it is currently blocking, 
@@ -122,7 +121,7 @@ public class MessagePasser {
     	if (this.isReceiveDelay == true) {
     		Message msg = this.receiveDelayPool.get(0);
     		this.receiveDelayPool.remove(0);
-    		if (!this.receiveDelayPool.isEmpty()) {
+    		if (this.receiveDelayPool.isEmpty()) {
     			this.isReceiveDelay = false;
     		}
     		return msg;
@@ -132,7 +131,7 @@ public class MessagePasser {
     	Message msg = controller.takeReceivedMessage();
     	String src = msg.getSourceName();
     	String dest = msg.getTargetName();
-    	System.out.println("src = " + src + "\tdest = " + dest);
+ //   	System.out.println("src = " + src + "\tdest = " + dest);
     	
     	/*
     	 *  Drop the message meets the rules until the one doesn't.
