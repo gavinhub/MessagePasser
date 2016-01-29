@@ -86,9 +86,11 @@ public class MessagePasser {
     	}
     	
     	if (this.sendDelayRules.containsKey(dest)) {
-    		System.out.println("--------- Sent to " + dest + " , Delay ---------");
-    		this.sendDelayPool.add(msg);
-    		return;
+    		if (this.sendDelayRules.get(dest) == null || this.sendDelayRules.get(dest).contains(src)) {
+	    		System.out.println("--------- Sent to " + dest + " , Delay ---------");
+	    		this.sendDelayPool.add(msg);
+	    		return;
+    		}
     	}
     	
     	this.controller.increaseSeqNum(dest); // Increase the seqNum of specified dest. 	
