@@ -5,9 +5,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 
-/**
- * Created by gavin on 1/17/16.
- */
 public class Host {
     private InetAddress addr;
     private int port;

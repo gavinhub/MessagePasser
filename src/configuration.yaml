@@ -22,6 +22,7 @@ sendRules :
 
   - action : dropAfter
     src : deadpool
+    dest : bob
     seqNum : 6
  
   - action : delay
@@ -29,7 +30,7 @@ sendRules :
     dest : alice
 
   - action : delay
-    dest : bob
+    dest : charli
 
 receiveRules :
   - action : delay
@@ -38,3 +39,12 @@ receiveRules :
   - action : delay
     src : bob
     dest : deadpool
+
+  - action : drop
+    src : bob
+    dest : ed
+
+  - action : dropAfter
+    src : alice
+    dest : ed
+    seqNum : 4

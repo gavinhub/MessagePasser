@@ -1,16 +1,9 @@
 package edu.cmu.dsmessage;
 
-import edu.cmu.dsmessage.except.StreamNotFoundException;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
-/**
- * Created by gavin on 1/19/16.
- */
 class ListenSession implements Runnable {
     private Controller ctrl;
     private ObjectInputStream iStream;

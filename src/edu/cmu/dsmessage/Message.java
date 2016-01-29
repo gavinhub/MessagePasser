@@ -2,18 +2,17 @@ package edu.cmu.dsmessage;
 
 import java.io.Serializable;
 
-/**
- * Created by gavin on 1/19/16.
- */
 public class Message implements Serializable{
     private String sourceName, targetName;
     private String content;
+    private int seqNum;
 
     public Message() {}
-    public Message(String src, String target, String content) {
+    public Message(String src, String target,String content) {
         this.sourceName = src;
         this.targetName = target;
         this.content = content;
+        this.seqNum = -1;
     }
 
     public String getSourceName() {
@@ -38,5 +37,13 @@ public class Message implements Serializable{
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getSequenceNumber() {
+        return seqNum;
+    }
+
+    public void setSequenceNumber(int seqNum) {
+        this.seqNum = seqNum;
     }
 }

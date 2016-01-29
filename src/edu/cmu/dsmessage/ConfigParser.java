@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created by gavin on 1/17/16.
- */
 class ConfigParser {
     private Map<String, Host> hosts;
 

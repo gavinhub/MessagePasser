@@ -9,9 +9,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Created by gavin on 1/17/16.
- */
 class Listener implements Runnable{
 
     private ServerSocket server;

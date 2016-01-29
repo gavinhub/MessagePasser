@@ -7,9 +7,6 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 
-/**
- * Created by gavin on 1/17/16.
- */
 class Speaker implements Runnable {
     private Controller ctrl;
 

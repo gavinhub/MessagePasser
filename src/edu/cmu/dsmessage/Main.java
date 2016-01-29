@@ -2,7 +2,6 @@ package edu.cmu.dsmessage;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.List;
 
 public class Main {
 
@@ -15,7 +14,8 @@ public class Main {
 
         MessagePasser passer = new MessagePasser(configFile, myName);
         
-        /*
+        /* Auto receiving
+         *
         Thread display = new Thread() {
             public void run() {
                 while(true) {
@@ -46,7 +46,7 @@ public class Main {
             if (input.trim().equals(""))
                 continue;
             
-            if (input.equals("receive")) {
+            if (input.equals("rec")) {
             	Message msg = passer.receive();
             	System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
             } else {            

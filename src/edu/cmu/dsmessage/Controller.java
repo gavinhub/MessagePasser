@@ -10,9 +10,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 
-/**
- * Created by gavin on 1/17/16.
- */
 class Controller {
     private Map<String, Host> hosts;
     private String myName;
