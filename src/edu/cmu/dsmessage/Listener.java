@@ -1,6 +1,7 @@
 package edu.cmu.dsmessage;
 
 import edu.cmu.dsmessage.except.StreamNotFoundException;
+import edu.cmu.dsmessage.util.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -22,7 +23,7 @@ class Listener implements Runnable{
     public void run() {
         try {
             this.server = new ServerSocket(this.ctrl.getMyPortNumber());
-            System.out.println("Listening on port: " + this.ctrl.getMyPortNumber());
+            Logger.log("LISTEN", "Listening on port: " + this.ctrl.getMyPortNumber());
             while (true) {
                 Socket coming = this.server.accept();
 
@@ -31,8 +32,7 @@ class Listener implements Runnable{
                 ObjectOutputStream oStream = new ObjectOutputStream(coming.getOutputStream());
                 oStream.writeObject(response);
                 oStream.flush();
-
-                System.out.println("Connection Request Accepted");
+                Logger.customOput("\033[36m[INFO] Connection Request Accepted\n\033[92m>> ");
                 ObjectInputStream iStream = new ObjectInputStream(coming.getInputStream());
                 Message firstMessage = (Message) iStream.readObject();
                 this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream, firstMessage.getSourceName());

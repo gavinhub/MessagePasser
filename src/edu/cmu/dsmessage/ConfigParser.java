@@ -1,5 +1,7 @@
 package edu.cmu.dsmessage;
 
+import edu.cmu.dsmessage.util.Logger;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,7 +17,7 @@ class ConfigParser {
     public ConfigParser(String configFile) throws ParseException, FileNotFoundException {
         hosts = new HashMap<>();
         parse(configFile);
-        System.out.println("Config Complete, " + hosts.size() + " hosts configured.");
+        Logger.log("CONFIG", "Config Complete, " + hosts.size() + " hosts configured.");
     }
 
     protected void parse(String filename) throws ParseException, FileNotFoundException {

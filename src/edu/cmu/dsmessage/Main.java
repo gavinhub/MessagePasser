@@ -1,5 +1,7 @@
 package edu.cmu.dsmessage;
 
+import edu.cmu.dsmessage.util.Logger;
+
 import java.io.*;
 import java.text.ParseException;
 
@@ -38,7 +40,7 @@ public class Main {
         while (true)
         try {
             Thread.sleep(250);
-            System.out.print(">> ");
+            System.out.print("\033[92m>> ");
             String input = keyIn.readLine();
             if (input == null) {
                 break;
@@ -46,9 +48,9 @@ public class Main {
             if (input.trim().equals(""))
                 continue;
             
-            if (input.equals("rec")) {
+            if (input.equals("R")) {
             	Message msg = passer.receive();
-            	System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
+                Logger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent());
             } else {            
 	            String name = input.split(" ")[0];
 	            String content = input.split(" ", 2)[1]; // Update 01/28

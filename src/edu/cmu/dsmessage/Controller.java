@@ -131,9 +131,7 @@ class Controller {
      * Print out a message. Just a test method.
      * @param msg the message to be handled.
      */
-    public void handleMessage(Message msg) {
-        System.out.println("[" + msg.getSourceName() + "] " + msg.getContent());
-    }
+    public void handleMessage(Message msg) {}
     
     public void increaseSeqNum(String dest) {
     	this.hosts.get(dest).increaseSeqNum();
