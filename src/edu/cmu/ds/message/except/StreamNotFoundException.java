@@ -1,4 +1,4 @@
-package edu.cmu.dsmessage.except;
+package edu.cmu.ds.message.except;
 
 /**
  * Created by gavin on 1/19/16.

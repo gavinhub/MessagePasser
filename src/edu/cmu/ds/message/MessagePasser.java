@@ -1,13 +1,12 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
+
+import edu.cmu.ds.clock.ClockService;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 public class MessagePasser {
     private Controller controller;
@@ -15,14 +14,15 @@ public class MessagePasser {
 	private List<Rule> receiveRules;
     private Queue<Message> sendDelayPool;
     private Queue<Message> receiveDelayPool;
+    private ClockService clock;
 
     
-    public MessagePasser(String configFile, String myName) throws ParseException, FileNotFoundException{
+    public MessagePasser(String configFile, String myName, ClockService clock) throws ParseException, FileNotFoundException{
         ConfigParser parser = new ConfigParser(configFile);
         YamlReader reader = new YamlReader();
-        
+
 		this.sendRules = reader.getRules(configFile, "sendRules");
-		this.receiveRules = reader.getRules(configFile, "receiveRules");
+        this.receiveRules = reader.getRules(configFile, "receiveRules");
         
         /*
          *  Initialize the local variables.
@@ -30,7 +30,8 @@ public class MessagePasser {
         this.sendDelayPool = new LinkedList<>(); 
         this.receiveDelayPool = new LinkedList<>();
 
-        this.controller = new Controller(parser, myName);
+        this.controller = new Controller(parser.getHosts(), myName);
+        this.clock = clock;
 
 		/* Start the threads */
         Thread listener = new Thread(new Listener(controller));
@@ -74,9 +75,13 @@ public class MessagePasser {
 		// successfully send a message
 		// append all massages in the delay pool to sending queue
 		if (!matches) {
+            msg.setTimestamp(this.clock.next());
 			this.controller.appendSendingMessage(msg);
+
 			while (!this.sendDelayPool.isEmpty()) {
-				controller.appendSendingMessage(this.sendDelayPool.poll());
+                Message nmsg = this.sendDelayPool.poll();
+                msg.setTimestamp(this.clock.next());
+				controller.appendSendingMessage(nmsg);
 			}
 		}
         
@@ -89,7 +94,9 @@ public class MessagePasser {
     public Message receive() throws InterruptedException{
 
         if (!this.receiveDelayPool.isEmpty()) {
-            return this.receiveDelayPool.poll();
+            Message msg = this.receiveDelayPool.poll();
+            this.clock.update(msg.getTimestamp());
+            return msg;
         }
 
     	/* Delay pool is empty, check new messages and add them to delay pool
@@ -109,6 +116,7 @@ public class MessagePasser {
             }
 
             if (!matches) {
+                this.clock.update(msg.getTimestamp());
                 return msg;
             }
         }

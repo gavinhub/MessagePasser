@@ -1,4 +1,6 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
+
+import edu.cmu.ds.clock.ITimestamp;
 
 import java.io.Serializable;
 
@@ -6,13 +8,15 @@ public class Message implements Serializable{
     private String sourceName, targetName;
     private String content;
     private int seqNum;
+    private ITimestamp timestamp;
 
     public Message() {}
-    public Message(String src, String target,String content) {
+    public Message(String src, String target, String content) {
         this.sourceName = src;
         this.targetName = target;
         this.content = content;
         this.seqNum = -1;
+        this.timestamp = null;
     }
 
     public String getSourceName() {
@@ -45,5 +49,13 @@ public class Message implements Serializable{
 
     public void setSequenceNumber(int seqNum) {
         this.seqNum = seqNum;
+    }
+
+    public ITimestamp getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(ITimestamp time) {
+        this.timestamp = time;
     }
 }

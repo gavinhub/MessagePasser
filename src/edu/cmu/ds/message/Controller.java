@@ -1,6 +1,6 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
-import edu.cmu.dsmessage.except.StreamNotFoundException;
+import edu.cmu.ds.message.except.StreamNotFoundException;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,10 +16,10 @@ class Controller {
     private BlockingQueue<Message> sendQueue; // Speaker will send out all messages in this queue
     private BlockingQueue<Message> receiveQueue; // store everything received.
 
-    public Controller(ConfigParser parser, String myName) {
+    public Controller(Map<String, Host> hosts, String myName) {
         sendQueue = new LinkedBlockingDeque<>();
         receiveQueue = new LinkedBlockingDeque<>();
-        this.hosts = parser.getHosts();
+        this.hosts = hosts;
         this.myName = myName;
     }
 

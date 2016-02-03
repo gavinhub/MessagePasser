@@ -1,10 +1,9 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
-import edu.cmu.dsmessage.except.StreamNotFoundException;
-import edu.cmu.dsmessage.util.Logger;
+import edu.cmu.ds.message.except.StreamNotFoundException;
+import edu.cmu.ds.message.util.MLogger;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -23,7 +22,7 @@ class Listener implements Runnable{
     public void run() {
         try {
             this.server = new ServerSocket(this.ctrl.getMyPortNumber());
-            Logger.log("LISTEN", "Listening on port: " + this.ctrl.getMyPortNumber());
+            MLogger.log("LISTEN", "Listening on port: " + this.ctrl.getMyPortNumber());
             while (true) {
                 Socket coming = this.server.accept();
 
@@ -32,7 +31,7 @@ class Listener implements Runnable{
                 ObjectOutputStream oStream = new ObjectOutputStream(coming.getOutputStream());
                 oStream.writeObject(response);
                 oStream.flush();
-                Logger.customOput("\033[36m[INFO] Connection Request Accepted\n\033[92m>> ");
+                MLogger.customOput("\033[36m[INFO] Connection Request Accepted\n\033[92m>> ");
                 ObjectInputStream iStream = new ObjectInputStream(coming.getInputStream());
                 Message firstMessage = (Message) iStream.readObject();
                 this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream, firstMessage.getSourceName());

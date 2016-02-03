@@ -1,19 +1,19 @@
-package edu.cmu.dsmessage.util;
+package edu.cmu.ds.message.util;
 
 /**
  * Created by Mingyang Ge on 1/30/16.
  */
-public class Logger {
+public class MLogger {
     public static void log(String tag, String content) {
-        Logger.output(tag, content, 33);
+        MLogger.output(tag, content, 33);
     }
 
     public static void error(String tag, String content) {
-        Logger.output(tag, content, 91);
+        MLogger.output(tag, content, 91);
     }
 
     public static void info(String tag, String content) {
-        Logger.output(tag, content, 36);
+        MLogger.output(tag, content, 36);
     }
 
     private static void output(String tag, String content, int color) {

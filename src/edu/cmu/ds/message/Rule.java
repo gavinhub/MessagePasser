@@ -1,4 +1,4 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
 
 public class Rule {

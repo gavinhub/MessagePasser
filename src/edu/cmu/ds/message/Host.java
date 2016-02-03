@@ -1,7 +1,6 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 

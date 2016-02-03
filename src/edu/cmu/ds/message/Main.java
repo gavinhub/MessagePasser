@@ -1,6 +1,8 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
-import edu.cmu.dsmessage.util.Logger;
+import edu.cmu.ds.clock.ClockService;
+import edu.cmu.ds.clock.ClockServiceFactory;
+import edu.cmu.ds.message.util.MLogger;
 
 import java.io.*;
 import java.text.ParseException;
@@ -12,9 +14,13 @@ public class Main {
             throw new ParseException("Arguments error:" + args[0], 0);
 
         String configFile = args[0];
-        String myName = args[1];
+        String clockType = args[1];
+        String myName = args[2];
 
-        MessagePasser passer = new MessagePasser(configFile, myName);
+        ClockServiceFactory factory = new ClockServiceFactory();
+        ClockService clock = factory.getClockService(clockType);
+
+        MessagePasser passer = new MessagePasser(configFile, myName, clock);
         
         /* Auto receiving
          *
@@ -50,7 +56,7 @@ public class Main {
             
             if (input.equals("R")) {
             	Message msg = passer.receive();
-                Logger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent());
+                MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent());
             } else {            
 	            String name = input.split(" ")[0];
 	            String content = input.split(" ", 2)[1]; // Update 01/28

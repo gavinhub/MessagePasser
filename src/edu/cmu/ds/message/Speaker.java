@@ -1,8 +1,8 @@
-package edu.cmu.dsmessage;
+package edu.cmu.ds.message;
 
 
-import edu.cmu.dsmessage.except.StreamNotFoundException;
-import edu.cmu.dsmessage.util.Logger;
+import edu.cmu.ds.message.except.StreamNotFoundException;
+import edu.cmu.ds.message.util.MLogger;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -30,7 +30,7 @@ class Speaker implements Runnable {
                     Message response = (Message)iStream.readObject();
                     oStream = new ObjectOutputStream(socket.getOutputStream());
 
-                    Logger.info("INFO", response.getSourceName() + " connected");
+                    MLogger.info("INFO", response.getSourceName() + " connected");
 
                     this.ctrl.addOutputStream(name, oStream, this.ctrl.getMyName());
                     this.ctrl.addInputStream(name, iStream, this.ctrl.getMyName());
@@ -40,7 +40,7 @@ class Speaker implements Runnable {
                 oStream.writeObject(msg);
             } catch (IOException | ClassNotFoundException e) {
                 if (e instanceof ConnectException) {
-                    Logger.error("Exception", "The other one is not ready.");
+                    MLogger.error("Exception", "The other one is not ready.");
                 } else {
                     e.printStackTrace();
                 }
