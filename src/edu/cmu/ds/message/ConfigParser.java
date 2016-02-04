@@ -12,8 +12,10 @@ import java.util.Map;
 
 class ConfigParser {
     private Map<String, Host> hosts;
+	private String filename;
 
     public ConfigParser(String configFile) throws ParseException, FileNotFoundException {
+		this.filename = configFile;
         hosts = new HashMap<>();
         parse(configFile);
         MLogger.log("CONFIG", "Config Complete, " + hosts.size() + " hosts configured.");
@@ -63,4 +65,13 @@ class ConfigParser {
     public Map<String, Host> getHosts() {
         return this.hosts;
     }
+
+	public String [] getHostArray() {
+		String [] hostList = new String[hosts.size()];
+		return hosts.keySet().toArray(hostList);
+	}
+
+	public String getFileName() {
+		return this.filename;
+	}
 }

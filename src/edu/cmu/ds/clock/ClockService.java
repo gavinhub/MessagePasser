@@ -3,6 +3,7 @@ package edu.cmu.ds.clock;
 public abstract class ClockService {
     protected String mySelf;
     protected ITimestamp stamp;
+    protected int host_num;
 
     public ITimestamp getCurrentTimestamp() {
         return this.stamp;

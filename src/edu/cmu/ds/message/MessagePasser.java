@@ -17,12 +17,11 @@ public class MessagePasser {
     private ClockService clock;
 
     
-    public MessagePasser(String configFile, String myName, ClockService clock) throws ParseException, FileNotFoundException{
-        ConfigParser parser = new ConfigParser(configFile);
+    public MessagePasser(ConfigParser parser, String myName, ClockService clock) throws ParseException, FileNotFoundException{
         YamlReader reader = new YamlReader();
 
-		this.sendRules = reader.getRules(configFile, "sendRules");
-        this.receiveRules = reader.getRules(configFile, "receiveRules");
+		this.sendRules = reader.getRules(parser.getFileName(), "sendRules");
+        this.receiveRules = reader.getRules(parser.getFileName(), "receiveRules");
         
         /*
          *  Initialize the local variables.

@@ -1,6 +1,8 @@
 package edu.cmu.ds.clock;
 
-public class LogicalTimestamp implements ITimestamp {
+import java.io.Serializable;
+
+public class LogicalTimestamp implements ITimestamp, Serializable {
     private int time;
     public LogicalTimestamp() {
         time = 0;
@@ -8,19 +10,31 @@ public class LogicalTimestamp implements ITimestamp {
 
     @Override
     public ITimestamp next() {
-        // TODO: implement next() method to obtain next Timestamp: add 1
-        return null;
+        this.time += 1;
+        LogicalTimestamp tmp = new LogicalTimestamp();
+        tmp.time = this.time;
+        return tmp;
     }
 
     @Override
     public ITimestamp update(ITimestamp t) {
-        // TODO: implement update() to update current timestamp according to coming timestamp
-        return null;
+        time = Math.max(time, ((LogicalTimestamp)t).time);
+        LogicalTimestamp tmp = new LogicalTimestamp();
+        tmp.time = this.time;
+        return tmp;
     }
 
     @Override
     public int compareTo(Object o) {
-        // TODO: compare timestamp
+        if (time < ((LogicalTimestamp)o).time)
+            return -1;
+        if (time > ((LogicalTimestamp)o).time)
+            return 1;
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "[LogicalTimestamp: " + this.time + "]";
     }
 }

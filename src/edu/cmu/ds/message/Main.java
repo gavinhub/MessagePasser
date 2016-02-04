@@ -18,9 +18,10 @@ public class Main {
         String myName = args[2];
 
         ClockServiceFactory factory = new ClockServiceFactory();
-        ClockService clock = factory.getClockService(clockType);
+        ConfigParser config = new ConfigParser(configFile);
 
-        MessagePasser passer = new MessagePasser(configFile, myName, clock);
+        ClockService clock = factory.getClockService(clockType, myName, config.getHostArray());
+        MessagePasser passer = new MessagePasser(config, myName, clock);
         
         /* Auto receiving
          *
@@ -56,7 +57,7 @@ public class Main {
             
             if (input.equals("R")) {
             	Message msg = passer.receive();
-                MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent());
+                MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
             } else {            
 	            String name = input.split(" ")[0];
 	            String content = input.split(" ", 2)[1]; // Update 01/28
