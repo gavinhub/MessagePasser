@@ -59,6 +59,7 @@ public class Main {
             
             // ********* log test *********
             String[] part = input.split(" ");
+            // If a user explicitly says "log", the message will be logged.
             if (part[0].equals("log")) {
             	String name = part[1];
             	String content = part[2];

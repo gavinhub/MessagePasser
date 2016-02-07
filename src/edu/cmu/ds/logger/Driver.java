@@ -60,6 +60,7 @@ public class Driver {
 				if (input.trim().equals(""))
 					continue;
 
+				// If we type "showlog" in the logger application, it will show all logs.
 				if (input.equals("showlog")) {
 					logger.printLog();
 				} 
