@@ -49,13 +49,26 @@ public class Main {
             Thread.sleep(250);
             System.out.print("\033[92m>> ");
             String input = keyIn.readLine();
+            
+            
             if (input == null) {
                 break;
             }
             if (input.trim().equals(""))
                 continue;
             
-            if (input.equals("R")) {
+            // ********* log test *********
+            String[] part = input.split(" ");
+            if (part[0].equals("log")) {
+            	String name = part[1];
+            	String content = part[2];
+            	Message logMsg = new Message(myName, "logger", content);
+            	passer.send(logMsg);
+            	Message msg = new Message(myName, name, content);
+            	passer.send(msg);            	
+            }
+            // ********* End log test *********
+            else if (input.equals("R")) {
             	Message msg = passer.receive();
                 MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
             } else {            
