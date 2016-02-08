@@ -33,10 +33,22 @@ public class Logger implements DSApplication {
 	public void printLog() {
 		PriorityQueue<TimeStampedMessage> temp = new PriorityQueue<>(queue);
 		
+		TimeStampedMessage lastMsg = null;
+		int num = 0;
+		boolean flag = false;
 		while (!temp.isEmpty()) {
-			TimeStampedMessage msg = temp.poll();
-
-			System.out.println(msg.toString());
+			TimeStampedMessage currentMsg = temp.poll();
+			if (lastMsg != null && lastMsg.equals(currentMsg)) {
+				System.out.println("*Concurrent Message, num = " + num + "*" + currentMsg.toString());
+				flag = true;
+			} else {
+				System.out.println(currentMsg.toString());
+				if (flag) {
+					num++;
+					flag = false;
+				}
+			}
+			lastMsg = currentMsg;
 		}
 	}
 }
