@@ -1,22 +1,29 @@
 package edu.cmu.ds.logger;
 
-import java.util.Map;
+import java.sql.Time;
 import java.util.PriorityQueue;
 
-import edu.cmu.ds.clock.ITimestamp;
-import edu.cmu.ds.message.ConfigParser;
-import edu.cmu.ds.message.Host;
+import edu.cmu.ds.application.DSApplication;
 import edu.cmu.ds.message.Message;
+import edu.cmu.ds.message.util.MLogger;
 
-public class Logger {
+public class Logger implements DSApplication {
 	
-	PriorityQueue<TimeStampedMessage> queue = new PriorityQueue<TimeStampedMessage>();
+	PriorityQueue<TimeStampedMessage> queue;
 	
 	public Logger() {
+		queue = new PriorityQueue<>();
+	}
+
+	public void onMessage(Message msg) {
+        MLogger.info("Logger", "new message");
+
+		this.addLog(msg);
 	}
 	
-	public void addLog(TimeStampedMessage newMsg) {
-		queue.add(newMsg);
+	protected void addLog(Message newMsg) {
+        TimeStampedMessage tsm = new TimeStampedMessage(newMsg.getTimestamp(), newMsg);
+		queue.add(tsm);
 	}
 	
 	public PriorityQueue<TimeStampedMessage> getLog() {
@@ -24,14 +31,12 @@ public class Logger {
 	}
 	
 	public void printLog() {
-		PriorityQueue<TimeStampedMessage> temp = new PriorityQueue<TimeStampedMessage>(queue);
+		PriorityQueue<TimeStampedMessage> temp = new PriorityQueue<>(queue);
 		
 		while (!temp.isEmpty()) {
-			TimeStampedMessage nextOne = temp.poll();
-			ITimestamp nextTime = nextOne.getTimestamp();
-			Message msg = nextOne.getMessage();
-			System.out.println(nextTime.toString() + "[src: " + msg.getSourceName() + "; dest: " +
-							   msg.getTargetName() + "] " + msg.getContent());
+			TimeStampedMessage msg = temp.poll();
+
+			System.out.println(msg.toString());
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package edu.cmu.ds.message;
 
 import edu.cmu.ds.clock.ClockService;
-import edu.cmu.ds.logger.TimeStampedMessage;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -120,15 +119,6 @@ public class MessagePasser {
                 return msg;
             }
         }
-    } 
-    
-    /* Move implementation to logger's driver
-    public TimeStampedMessage receiveTimeStampedMessage() throws InterruptedException {
-    	Message msg = this.controller.takeReceivedMessage();
-    	TimeStampedMessage tsMsg = new TimeStampedMessage(msg.getTimestamp(), msg);
-    	return tsMsg;
     }
-    */
-    
 
 }

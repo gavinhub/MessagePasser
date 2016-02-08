@@ -31,13 +31,12 @@ public class Driver {
 		MessagePasser passer = new MessagePasser(config, "logger", clock);
 
 		// Receive all incoming log
-		Thread display = new Thread() {
+		Thread storing = new Thread() {
 			public void run() {
 				while(true) {
 					try {
 						Message msg = passer.receive();
-						TimeStampedMessage tsMsg = new TimeStampedMessage(msg.getTimestamp(), msg);
-						logger.addLog(tsMsg);
+						logger.onMessage(msg);
 					} catch (InterruptedException e) {
 						System.out.println("Interrupted");
 						e.printStackTrace();
@@ -46,7 +45,7 @@ public class Driver {
 				}
 			}
 		};
-		display.start();
+		storing.start();
 
 		BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
 		while (true)
