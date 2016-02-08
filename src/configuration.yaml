@@ -1,7 +1,7 @@
 configuration :
   - name : alice
     ip : 127.0.0.1
-    port : 12344 
+    port : 12344
   - name : bob
     ip : 127.0.0.1
     port : 14255
@@ -11,40 +11,24 @@ configuration :
   - name : deadpool
     ip : 127.0.0.1
     port : 1987
-  - name : ed
+  - name : logger
     ip : 127.0.0.1
-    port : 2016
-
+    port : 2006
+ 
 sendRules :
   - action : drop 
     src : bob
-    dest : alice
-
-  - action : dropAfter
-    src : deadpool
-    dest : bob
-    seqNum : 6
- 
-  - action : delay
-    src : deadpool
-    dest : alice
-
-  - action : delay
-    dest : charli
-
-receiveRules :
-  - action : delay
-    src : charlie
+    dest : charlie
 
   - action : delay
     src : bob
     dest : deadpool
 
-  - action : drop
+receiveRules :
+  - action : delay
     src : bob
-    dest : ed
+    dest : deadpool
 
-  - action : dropAfter
-    src : alice
-    dest : ed
-    seqNum : 4
+  - action : drop
+    src : charlie
+    dest : deadpool

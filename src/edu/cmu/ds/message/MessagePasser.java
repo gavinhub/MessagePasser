@@ -1,6 +1,7 @@
 package edu.cmu.ds.message;
 
 import edu.cmu.ds.clock.ClockService;
+import edu.cmu.ds.logger.TimeStampedMessage;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -55,7 +56,6 @@ public class MessagePasser {
 		int seqNum = this.controller.getSeqNum(dest);
 		this.controller.increaseSeqNum(dest);
     	msg.setSequenceNumber(seqNum); // need to set seqNum because it's not decided until sent.
-        msg.setTimestamp(this.clock.next());
 
 		boolean matches = false;
 		for (Rule rule: this.sendRules) {
@@ -75,10 +75,13 @@ public class MessagePasser {
 		// successfully send a message
 		// append all massages in the delay pool to sending queue
 		if (!matches) {
+            msg.setTimestamp(this.clock.next());
 			this.controller.appendSendingMessage(msg);
 
 			while (!this.sendDelayPool.isEmpty()) {
-				controller.appendSendingMessage(sendDelayPool.poll());
+                Message nmsg = this.sendDelayPool.poll();
+                msg.setTimestamp(this.clock.next());
+				controller.appendSendingMessage(nmsg);
 			}
 		}
         
@@ -111,12 +114,21 @@ public class MessagePasser {
                     break;
                 }
             }
+
             if (!matches) {
                 this.clock.update(msg.getTimestamp());
                 return msg;
             }
         }
     } 
+    
+    /* Move implementation to logger's driver
+    public TimeStampedMessage receiveTimeStampedMessage() throws InterruptedException {
+    	Message msg = this.controller.takeReceivedMessage();
+    	TimeStampedMessage tsMsg = new TimeStampedMessage(msg.getTimestamp(), msg);
+    	return tsMsg;
+    }
+    */
     
 
 }
