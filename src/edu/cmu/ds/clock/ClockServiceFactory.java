@@ -9,6 +9,7 @@ public class ClockServiceFactory {
             case "VECTOR":
                 return new VectorClock(mySelf, hosts);
             default:
+                System.out.println("Applicable Type: LOGICAL, VECTOR");
                 return null;
         }
     }
