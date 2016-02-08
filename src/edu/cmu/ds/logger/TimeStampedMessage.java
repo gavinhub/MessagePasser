@@ -1,6 +1,7 @@
 package edu.cmu.ds.logger;
 
 import edu.cmu.ds.clock.ITimestamp;
+import edu.cmu.ds.clock.VectorTimestamp;
 import edu.cmu.ds.message.Message;
 
 public class TimeStampedMessage implements Comparable<TimeStampedMessage> {
@@ -24,6 +25,11 @@ public class TimeStampedMessage implements Comparable<TimeStampedMessage> {
 	@Override
 	public int compareTo(TimeStampedMessage o) {
 		return this.timestamp.compareTo(o.getTimestamp());
+	}
+	
+	
+	public boolean equal(TimeStampedMessage o) {
+		return this.compareTo(o) == 0;
 	}
 
 	public String toString() {

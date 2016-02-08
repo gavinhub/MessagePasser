@@ -94,4 +94,9 @@ public class VectorTimestamp implements ITimestamp, Serializable {
         sb.append("]");
         return sb.toString();
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	return this.compareTo((VectorTimestamp)o) == 0;
+    }
 }

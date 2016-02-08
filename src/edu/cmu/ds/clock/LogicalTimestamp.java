@@ -37,4 +37,9 @@ public class LogicalTimestamp implements ITimestamp, Serializable {
     public String toString() {
         return "[LogicalTimestamp: " + this.time + "]";
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	return this.compareTo((LogicalTimestamp)o) == 0;
+    }
 }
