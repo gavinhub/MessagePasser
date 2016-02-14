@@ -24,6 +24,11 @@ sendRules :
     src : bob
     dest : deadpool
 
+  - action : dropAfter
+    src : bob
+    dest : ed
+    seqNum : 5
+
 receiveRules :
   - action : delay
     src : bob

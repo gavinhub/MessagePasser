@@ -43,9 +43,9 @@ class YamlReader {
             Rule rule = new Rule(act);
             rule.dest = (String)map.get("dest");
             rule.src = (String)map.get("src");
-            Integer canBeNull = (Integer)map.get("seqNum");
-            if (canBeNull != null)
-                rule.seqNum = canBeNull;
+            Integer seqNum = (Integer)map.get("seqNum");
+            if (act == Rule.Action.DROPAFTER)
+                rule.seqNum = seqNum;
             rules.add(rule);
         }
         return rules;
