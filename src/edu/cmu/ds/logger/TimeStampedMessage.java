@@ -26,11 +26,6 @@ public class TimeStampedMessage implements Comparable<TimeStampedMessage> {
 	public int compareTo(TimeStampedMessage o) {
 		return this.timestamp.compareTo(o.getTimestamp());
 	}
-	
-	
-	public boolean equal(TimeStampedMessage o) {
-		return this.compareTo(o) == 0;
-	}
 
 	public String toString() {
         return timestamp.toString() + "[src: " + msg.getSourceName() + "; dest: " +

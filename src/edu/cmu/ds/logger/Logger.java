@@ -38,7 +38,7 @@ public class Logger implements DSApplication {
 		boolean flag = false;
 		while (!temp.isEmpty()) {
 			TimeStampedMessage currentMsg = temp.poll();
-			if (lastMsg != null && lastMsg.equal(currentMsg)) {
+			if (lastMsg != null && lastMsg.compareTo(currentMsg) == 0) {
 				System.out.println("*Concurrent Message, num = " + num + "*" + currentMsg.toString());
 				flag = true;
 			} else {
