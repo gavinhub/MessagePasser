@@ -16,7 +16,7 @@ configuration :
     port : 2006
  
 sendRules :
-  - action : drop 
+  - action : drop
     src : bob
     dest : charlie
 

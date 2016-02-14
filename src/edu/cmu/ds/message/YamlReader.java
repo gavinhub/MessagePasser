@@ -26,7 +26,7 @@ class YamlReader {
         Map<String, ArrayList<Map<String, Object>>> values = (Map<String, ArrayList<Map<String, Object>>>) yaml
                 .load(new FileInputStream(new File(file)));
         ArrayList<Map<String, Object>> list =  values.get(ruleType);
-
+        if (list == null) return null;
         ArrayList<Rule> rules = new ArrayList<>();
         for (Map<String, Object> map: list) {
             Rule.Action act;

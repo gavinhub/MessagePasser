@@ -55,31 +55,30 @@ public class MessagePasser {
 		int seqNum = this.controller.getSeqNum(dest);
 		this.controller.increaseSeqNum(dest);
     	msg.setSequenceNumber(seqNum); // need to set seqNum because it's not decided until sent.
+        msg.setTimestamp(this.clock.next());
 
 		boolean matches = false;
-		for (Rule rule: this.sendRules) {
-			if (rule.match(msg)) {
+        if (this.sendRules != null)
+            for (Rule rule: this.sendRules) {
+                if (rule.match(msg)) {
 
-				// if delay, add it to delay pool
-				if (rule.action == Rule.Action.DELAY) {
-					this.sendDelayPool.add(msg);
-				}
+                    // if delay, add it to delay pool
+                    if (rule.action == Rule.Action.DELAY) {
+                        this.sendDelayPool.add(msg);
+                    }
 
-				// whatever match, message is not sent
-				matches = true;
-				break;
-			}
-		}
+                    // whatever match, message is not sent
+                    matches = true;
+                    break;
+                }
+            }
 
 		// successfully send a message
 		// append all massages in the delay pool to sending queue
 		if (!matches) {
-            msg.setTimestamp(this.clock.next());
 			this.controller.appendSendingMessage(msg);
-
 			while (!this.sendDelayPool.isEmpty()) {
                 Message nmsg = this.sendDelayPool.poll();
-                msg.setTimestamp(this.clock.next());
 				controller.appendSendingMessage(nmsg);
 			}
 		}
@@ -104,15 +103,16 @@ public class MessagePasser {
         while (true) {
             Message msg = controller.takeReceivedMessage();
             boolean matches = false;
-            for (Rule rule: this.receiveRules) {
-                if (rule.match(msg)) {
-                    if (rule.action == Rule.Action.DELAY) {
-                        this.receiveDelayPool.add(msg);
+            if (this.receiveRules != null)
+                for (Rule rule: this.receiveRules) {
+                    if (rule.match(msg)) {
+                        if (rule.action == Rule.Action.DELAY) {
+                            this.receiveDelayPool.add(msg);
+                        }
+                        matches = true;
+                        break;
                     }
-                    matches = true;
-                    break;
                 }
-            }
 
             if (!matches) {
                 this.clock.update(msg.getTimestamp());
