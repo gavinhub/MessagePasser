@@ -17,7 +17,7 @@ public class MulticastMessagePasser extends MessagePasser {
 
     public MulticastMessagePasser(ConfigParser parser, String myName, ClockService uniClock) throws ParseException, FileNotFoundException {
         super(parser, myName, uniClock);
-        List<Group> groups = parser.getGroupList(myName);
+        List<Group> groups = parser.getMyGroups(myName);
         received = new HashSet<>();
         ClockServiceFactory factory = new ClockServiceFactory();
         for (Group g : groups) {

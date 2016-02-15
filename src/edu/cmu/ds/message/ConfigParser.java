@@ -56,14 +56,21 @@ public class ConfigParser {
 	public List<Group> getGroupList() {
         return this.groups;
     }
-
+	
 	/**
 	 * return groups that contains this member
+     * Note that a user may belong to several groups.     
 	 * @param member the member name
 	 * @return groups containing this member
      */
-	public List<Group> getGroupList(String member) {
-		return this.groups;
+	public List<Group> getMyGroups(String myName) {
+		List<Group> myGroup = new ArrayList<Group>();
+        for (Group g : groups) {
+        	if (g.getMembers().contains(myName)) {
+        		myGroup.add(g);
+        	}
+        }
+		return myGroup;
 	}
 
 	public String getFileName() {
