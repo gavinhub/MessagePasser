@@ -63,13 +63,16 @@ class YamlReader {
         ArrayList<Map<String, Object>> list = values.get("groups");
 
         ArrayList<Group> groups = new ArrayList<>();
+        
         for (Map<String, Object> map: list) {
             String groupName = (String)map.get("name");
             List<String> names = (List<String>)map.get("members");
+            System.out.println("groupName ＝ " + groupName + "\tnames = " + names);
             Group g = new Group(groupName);
             for (String name: names) {
                 g.add(name);
             }
+            groups.add(g);
         }
         return groups;
     }

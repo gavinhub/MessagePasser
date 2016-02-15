@@ -3,6 +3,7 @@ package edu.cmu.ds.multicast;
 import edu.cmu.ds.clock.ClockService;
 import edu.cmu.ds.clock.ClockServiceFactory;
 import edu.cmu.ds.clock.VectorClock;
+import edu.cmu.ds.clock.VectorTimestamp;
 import edu.cmu.ds.message.ConfigParser;
 import edu.cmu.ds.message.MessagePasser;
 
@@ -17,7 +18,7 @@ public class MulticastMessagePasser extends MessagePasser {
 
     public MulticastMessagePasser(ConfigParser parser, String myName, ClockService uniClock) throws ParseException, FileNotFoundException {
         super(parser, myName, uniClock);
-        List<Group> groups = parser.getGroupList(myName);
+        List<Group> groups = parser.getMyGroups(myName);
         received = new HashSet<>();
         ClockServiceFactory factory = new ClockServiceFactory();
         for (Group g : groups) {
@@ -52,7 +53,10 @@ public class MulticastMessagePasser extends MessagePasser {
      * @param gmsg
      */
     protected void CO_multicast(GroupMessage gmsg) {
-
+        Group group = groups.get(gmsg.group);
+        VectorTimestamp timestamp = group.getNextTimestamp();
+        gmsg.setTimestamp(timestamp);
+        B_multicast(gmsg);
     }
 
     /**
