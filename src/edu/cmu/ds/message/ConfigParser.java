@@ -57,6 +57,15 @@ public class ConfigParser {
         return this.groups;
     }
 
+	/**
+	 * return groups that contains this member
+	 * @param member the member name
+	 * @return groups containing this member
+     */
+	public List<Group> getGroupList(String member) {
+		return this.groups;
+	}
+
 	public String getFileName() {
 		return this.filename;
 	}

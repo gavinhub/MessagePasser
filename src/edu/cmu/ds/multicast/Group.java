@@ -1,6 +1,7 @@
 package edu.cmu.ds.multicast;
 
 import edu.cmu.ds.clock.VectorClock;
+import edu.cmu.ds.clock.VectorTimestamp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,10 @@ public class Group {
 
     public void setClock(VectorClock vc) {
         clock = vc;
+    }
+
+    public VectorTimestamp getNextTimestamp() {
+        return (VectorTimestamp) clock.next();
     }
 
     public void add(String member) {
