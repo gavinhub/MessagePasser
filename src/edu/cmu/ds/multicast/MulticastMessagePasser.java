@@ -68,9 +68,16 @@ public class MulticastMessagePasser extends MessagePasser {
      * @return block if no message to deliver
      */
     protected GroupMessage R_deliver() throws InterruptedException {
-        GroupMessage gmsg = B_deliver();
-        if (!received.contains(gmsg)) {
-            // TODO
+        GroupMessage gmsg;
+        while ((gmsg = B_deliver()) != null) {
+            if (!received.contains(gmsg)) {
+                received.add(gmsg);
+                if (!gmsg.getSourceName().equals(this.getMyName())) {
+                    B_multicast(gmsg);
+                } else {
+                    return gmsg;
+                }
+            }
         }
         return null;
     }
@@ -94,6 +101,7 @@ public class MulticastMessagePasser extends MessagePasser {
 
     /**
      * Deliver a message. Block until a message is ready for delivery
+     * @return return the delivered message
      */
     public GroupMessage deliver() throws InterruptedException {
         // for extensibility. use this method as a broker when different type of requirement is needed.

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class MessagePasser {
-    private Controller controller;
+    protected Controller controller;
 	private List<Rule> sendRules;
 	private List<Rule> receiveRules;
     private Queue<Message> sendDelayPool;
@@ -125,6 +125,10 @@ public class MessagePasser {
                 return msg;
             }
         }
+    }
+
+    public String getMyName() {
+        return controller.getMyName();
     }
 
 }
