@@ -100,7 +100,7 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     public void multiCast(GroupMessage msg) {
         assert msg.group != null;
-        CO_multicast(msg);
+        R_multicast(msg);
     }
 
     /**
@@ -110,7 +110,7 @@ public class MulticastMessagePasser extends MessagePasser {
     public GroupMessage deliver() throws InterruptedException {
         // for extensibility. use this method as a broker when different type of requirement is needed.
         // Currently, we use CO_DELIVER
-        return CO_deliver();
+        return R_deliver();
     }
 
 }

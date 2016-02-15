@@ -16,9 +16,6 @@ import edu.cmu.ds.message.Message;
 import edu.cmu.ds.message.MessagePasser;
 import edu.cmu.ds.message.util.MLogger;
 
-/**
- * Created by gavin on 2/13/16.
- */
 public class MulticastDriver {
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException {
@@ -65,21 +62,16 @@ public class MulticastDriver {
             if (input == null) {
                 break;
             }
-            if (input.trim().equals(""))
+            if (input.trim().equals("")) {
                 continue;
-            
-            else if (input.equals("R")) {
-            	// TODO: 
-            	
-//            	Message msg = passer.receive();
-//             	MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
-            } else {            
-            	// TODO: Broadcast the message when enter the destination as "all"
-            	
-//	            String name = input.split(" ")[0];
-//	            String content = input.split(" ", 2)[1]; // Update 01/28
-//	            GroupMessage msg = new GroupMessage(myName, name, content);
-//	            passer.send(msg);
+            } else if (input.equals("D")) {
+            	Message msg = passer.deliver();
+             	MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
+            } else {
+	            String groupName = input.split(" ")[0];
+	            String content = input.split(" ", 2)[1]; // Update 01/28
+	            GroupMessage msg = new GroupMessage(myName, groupName, content);
+	            passer.multiCast(msg);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
