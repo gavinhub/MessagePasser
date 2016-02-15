@@ -1,6 +1,7 @@
 package edu.cmu.ds.message;
 
 import edu.cmu.ds.message.util.MLogger;
+import edu.cmu.ds.multicast.Group;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -8,11 +9,13 @@ import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigParser {
     private Map<String, Host> hosts;
 	private String filename;
+    private ArrayList<Group> groups;
 
     public ConfigParser(String configFile) throws ParseException, FileNotFoundException {
 		this.filename = configFile;
@@ -37,30 +40,9 @@ public class ConfigParser {
     		hosts.put(name, host);
     	}
     	
-
+        groups = reader.getGroups(filename);
     }
-    
-    /*
-    protected void parse(String filename) throws ParseException {
-        try {
-            FileReader file = new FileReader(filename);
-            BufferedReader reader = new BufferedReader(file);
-            String aLine;
-            while ((aLine = reader.readLine()) != null) {
-                String [] parts = aLine.split("[\\s:]+");
-                if (parts.length != 3) {
-                    throw new ParseException("Error Line " + parts.length + " " + aLine, 0);
-                }
-                Host host = new Host(InetAddress.getByName(parts[1]), parts[0], Integer.parseInt(parts[2]));
-                hosts.put(parts[0], host);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ParseException("IOException", 0);
-        }
 
-    }
-    */
 
     public Map<String, Host> getHosts() {
         return this.hosts;
@@ -70,6 +52,10 @@ public class ConfigParser {
 		String [] hostList = new String[hosts.size()];
 		return hosts.keySet().toArray(hostList);
 	}
+
+	public List<Group> getGroupList() {
+        return this.groups;
+    }
 
 	public String getFileName() {
 		return this.filename;

@@ -44,20 +44,18 @@ public class MessagePasser {
      * Add a message to the send queue. every thing in the queue will be sent.
      * @param msg the message to be sent
      */
-    public void send(Message msg) {
+    protected void sendTimedMessage(Message msg) {
+        String dest = msg.getTargetName();
 
-    	String dest = msg.getTargetName();
+        if (this.controller.lookUpHost(dest) == null) {
+            System.out.println("No host found");
+            return;
+        }
+        int seqNum = this.controller.getSeqNum(dest);
+        this.controller.increaseSeqNum(dest);
+        msg.setSequenceNumber(seqNum); // need to set seqNum because it's not decided until sent.
 
-		if (this.controller.lookUpHost(dest) == null) {
-			System.out.println("No host found");
-			return;
-		}
-		int seqNum = this.controller.getSeqNum(dest);
-		this.controller.increaseSeqNum(dest);
-    	msg.setSequenceNumber(seqNum); // need to set seqNum because it's not decided until sent.
-        msg.setTimestamp(this.clock.next());
-
-		boolean matches = false;
+        boolean matches = false;
         if (this.sendRules != null)
             for (Rule rule: this.sendRules) {
                 if (rule.match(msg)) {
@@ -73,16 +71,24 @@ public class MessagePasser {
                 }
             }
 
-		// successfully send a message
-		// append all massages in the delay pool to sending queue
-		if (!matches) {
-			this.controller.appendSendingMessage(msg);
-			while (!this.sendDelayPool.isEmpty()) {
+        // successfully send a message
+        // append all massages in the delay pool to sending queue
+        if (!matches) {
+            this.controller.appendSendingMessage(msg);
+            while (!this.sendDelayPool.isEmpty()) {
                 Message nmsg = this.sendDelayPool.poll();
-				controller.appendSendingMessage(nmsg);
-			}
-		}
-        
+                controller.appendSendingMessage(nmsg);
+            }
+        }
+    }
+
+    /**
+     * Automatically increase timestamp - API for normal message passing
+     * @param msg Message with only src, dest, content
+     */
+    public void send(Message msg) {
+        msg.setTimestamp(this.clock.next());
+        sendTimedMessage(msg);
     }
 
     /**

@@ -5,10 +5,10 @@ import edu.cmu.ds.clock.ITimestamp;
 import java.io.Serializable;
 
 public class Message implements Serializable{
-    private String sourceName, targetName;
-    private String content;
-    private int seqNum;
-    private ITimestamp timestamp;
+    protected String sourceName, targetName;
+    protected String content;
+    protected int seqNum;
+    protected ITimestamp timestamp;
 
     public Message() {}
     public Message(String src, String target, String content) {
