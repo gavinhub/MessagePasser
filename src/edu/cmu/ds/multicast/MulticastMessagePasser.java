@@ -3,24 +3,22 @@ package edu.cmu.ds.multicast;
 import edu.cmu.ds.clock.ClockService;
 import edu.cmu.ds.clock.ClockServiceFactory;
 import edu.cmu.ds.clock.VectorClock;
-import edu.cmu.ds.clock.VectorTimestamp;
 import edu.cmu.ds.message.ConfigParser;
-import edu.cmu.ds.message.Message;
 import edu.cmu.ds.message.MessagePasser;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MulticastMessagePasser extends MessagePasser {
 
     private Map<String, Group> groups = new HashMap<>();
+    private Set<GroupMessage> received;
 
     public MulticastMessagePasser(ConfigParser parser, String myName, ClockService uniClock) throws ParseException, FileNotFoundException {
         super(parser, myName, uniClock);
         List<Group> groups = parser.getGroupList(myName);
+        received = new HashSet<>();
         ClockServiceFactory factory = new ClockServiceFactory();
         for (Group g : groups) {
             g.setClock((VectorClock) factory.getClockService("VECTOR", myName, parser.getHostArray()));
@@ -46,7 +44,7 @@ public class MulticastMessagePasser extends MessagePasser {
      * @param gmsg msg with group
      */
     protected void R_multicast(GroupMessage gmsg) {
-
+        B_multicast(gmsg);
     }
 
     /**
@@ -69,7 +67,11 @@ public class MulticastMessagePasser extends MessagePasser {
      * Reliable delivery. Make sure to eliminate duplications and deliver after multicast it.
      * @return block if no message to deliver
      */
-    protected GroupMessage R_deliver() {
+    protected GroupMessage R_deliver() throws InterruptedException {
+        GroupMessage gmsg = B_deliver();
+        if (!received.contains(gmsg)) {
+            // TODO
+        }
         return null;
     }
 
@@ -77,7 +79,7 @@ public class MulticastMessagePasser extends MessagePasser {
      * Using a hold back queue to maintain casual ordering
      * @return block if no message to deliver
      */
-    protected GroupMessage CO_deliver() {
+    protected GroupMessage CO_deliver() throws InterruptedException {
         return null;
     }
 
@@ -87,13 +89,16 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     public void multiCast(GroupMessage msg) {
         assert msg.group != null;
-        Group group = groups.get(msg.group);
-        VectorTimestamp time = group.getNextTimestamp();
-        msg.setTimestamp(time);
-        for (String target: group.getMembers()) {
-            msg.setTargetName(target);
-            this.sendTimedMessage(msg);
-        }
+        CO_multicast(msg);
+    }
+
+    /**
+     * Deliver a message. Block until a message is ready for delivery
+     */
+    public GroupMessage deliver() throws InterruptedException {
+        // for extensibility. use this method as a broker when different type of requirement is needed.
+        // Currently, we use CO_DELIVER
+        return CO_deliver();
     }
 
 }
