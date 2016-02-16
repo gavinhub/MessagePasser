@@ -4,25 +4,45 @@ import edu.cmu.ds.message.Message;
 
 public class GroupMessage extends Message {
     protected String group;
+    private String origin;
 
     public GroupMessage() {}
 
     public GroupMessage(String src, String group, String content) {
         super(src, null, content);
         this.group = group;
+        
+        /* 
+         * If it is the first time to send, set the origin the same as the src.
+         */
+        if (origin == null) {
+        	origin = src;
+        }
     }
 
     public String getGroup() {return group;}
+    
+    public String getOrigin() {return origin;}
 
     public void setGroup(String group) { this.group = group;}
 
+    /**
+     * Use timestamp plus the hash code of origin to build the hash code for this class.
+     * @return int
+     */
     public int hashCode() {
-        // TODO: same message will have same hashCode
-        return 0;
+        return this.timestamp.getTime() + this.origin.hashCode();
     }
 
+    /**
+     * If both the timestamp and origin are equal, then two Groupmessage will be consider equal.
+     * @return boolean
+     */
     public boolean equals(Object o) {
-        // TODO: return true if the messages are same
-        return true;
+    	GroupMessage target = (GroupMessage) o;
+        if (this.getOrigin() == target.getOrigin() && this.timestamp.getTime() == target.timestamp.getTime()) {
+        	return true;
+        }
+        return false;
     }
 }

@@ -36,7 +36,13 @@ public class MulticastMessagePasser extends MessagePasser {
         Group group = groups.get(gmsg.getGroup());
         for (String target: group.getMembers()) {
             gmsg.setTargetName(target);
-            this.sendTimedMessage(gmsg);
+            ///////// Test /////////
+            System.out.println("src = " + gmsg.getSourceName() + "\ttarget = " + gmsg.getTargetName() + "\tcontent = " + gmsg.getContent());
+            ///////// End Test /////////
+            
+            // Which one is right?
+//          this.sendTimedMessage(gmsg);
+            this.send(gmsg);
         }
     }
 
@@ -53,7 +59,7 @@ public class MulticastMessagePasser extends MessagePasser {
      * @param gmsg
      */
     protected void CO_multicast(GroupMessage gmsg) {
-        Group group = groups.get(gmsg.group);
+    	Group group = groups.get(gmsg.group);
         VectorTimestamp timestamp = group.getNextTimestamp();
         gmsg.setTimestamp(timestamp);
         B_multicast(gmsg);
@@ -72,7 +78,7 @@ public class MulticastMessagePasser extends MessagePasser {
      * @return block if no message to deliver
      */
     protected GroupMessage R_deliver() throws InterruptedException {
-        GroupMessage gmsg;
+    	GroupMessage gmsg;
         while ((gmsg = B_deliver()) != null) {
             if (!received.contains(gmsg)) {
                 received.add(gmsg);
@@ -100,16 +106,15 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     public void multiCast(GroupMessage msg) {
         assert msg.group != null;
-        R_multicast(msg);
+        CO_multicast(msg);
     }
 
     /**
      * Deliver a message. Block until a message is ready for delivery
-     * @return return the delivered message
      */
     public GroupMessage deliver() throws InterruptedException {
-        // for extensibility. use this method as a broker when different type of requirement is needed.
-        // Currently, we use CO_DELIVER
+    	// for extensibility. use this method as a broker when different type of requirement is needed.
+        // Currently, we use R_DELIVER
         return R_deliver();
     }
 

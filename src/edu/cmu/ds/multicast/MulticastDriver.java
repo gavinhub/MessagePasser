@@ -16,6 +16,9 @@ import edu.cmu.ds.message.Message;
 import edu.cmu.ds.message.MessagePasser;
 import edu.cmu.ds.message.util.MLogger;
 
+/**
+ * Created by gavin on 2/13/16.
+ */
 public class MulticastDriver {
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException {
@@ -47,34 +50,44 @@ public class MulticastDriver {
         
         System.out.print("My groups: ");
         for (Group g : myGroups) {
-        	System.out.println(g.getName() + "\t");
+        	System.out.print(g.getName() + "\t");
         }
+        System.out.println();
         ///////// End Test /////////
         
-        BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));               
         while (true)
-        try {
-            Thread.sleep(250);
-            System.out.print("\033[92m>> ");
-            String input = keyIn.readLine();
-            
-            
-            if (input == null) {
-                break;
+            try {
+                Thread.sleep(250);
+                System.out.print("\033[92m>> ");
+                String input = keyIn.readLine();
+                
+                
+                if (input == null) {
+                    break;
+                }
+                if (input.trim().equals("")) {
+                    continue;
+                } else if (input.equals("D")) {
+                	GroupMessage msg = passer.deliver();
+                	
+                	///////// Show the information /////////
+                	System.out.println("ori = " + msg.getOrigin() + 
+     					   "\tsrc = " + msg.getSourceName() + 
+     					   "\tseqNum = " + msg.getSequenceNumber() +
+     					   "\ttime = " + msg.getTimestamp().getTime() +
+     					   "\thashCode = " + msg.hashCode());
+                	///////// End Test /////////
+                	
+                 	MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
+                } else {
+    	            String groupName = input.split(" ")[0];
+    	            String content = input.split(" ", 2)[1]; // Update 01/28
+    	            GroupMessage msg = new GroupMessage(myName, groupName, content);
+    	            passer.multiCast(msg);
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
-            if (input.trim().equals("")) {
-                continue;
-            } else if (input.equals("D")) {
-            	Message msg = passer.deliver();
-             	MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
-            } else {
-	            String groupName = input.split(" ")[0];
-	            String content = input.split(" ", 2)[1]; // Update 01/28
-	            GroupMessage msg = new GroupMessage(myName, groupName, content);
-	            passer.multiCast(msg);
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
 	}
 }

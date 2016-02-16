@@ -37,4 +37,12 @@ public class LogicalTimestamp implements ITimestamp, Serializable {
     public String toString() {
         return "[LogicalTimestamp: " + this.time + "]";
     }
+    
+    /**
+     * Return an int as part of the hashcode for GroupMessage.
+     * @return int
+     */
+    public int getTime() {
+    	return time;
+    }
 }

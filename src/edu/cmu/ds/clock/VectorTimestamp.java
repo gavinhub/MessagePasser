@@ -34,6 +34,20 @@ public class VectorTimestamp implements ITimestamp, Serializable {
     protected int getTimeStamp(String name) {
         return this.time.get(name);
     }
+    
+    /**
+     * Return an int consisting of all the vector timestamps as part of the hashcode for GroupMessage.
+     * @return int
+     */
+    public int getTime() {
+    	int timeCode = 0;
+    	Iterator iter = time.entrySet().iterator();
+    	while(iter.hasNext()) {
+    		Map.Entry entry = (Map.Entry) iter.next();
+    		timeCode = timeCode * 10 + (int) entry.getValue();
+    	}
+    	return timeCode;
+    }
 
     @Override
     public ITimestamp next() {
