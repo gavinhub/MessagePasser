@@ -74,15 +74,8 @@ public class MulticastDriver {
                 } else if (input.equals("D")) {
                 	GroupMessage msg = passer.deliver();
                 	
-                	///////// Show the information /////////
-                	System.out.println("ori = " + msg.getOrigin() + 
-     					   "\tsrc = " + msg.getSourceName() + 
-     					   "\tseqNum = " + msg.getSequenceNumber() +
-     					   "\ttime = " + msg.getTimestamp().getTime() +
-     					   "\thashCode = " + msg.hashCode());
-                	///////// End Test /////////
-                	
-                 	MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
+                 	MLogger.message("Ori:" + msg.getOrigin() + " Src:" + msg.getSourceName(),
+                            "Seq:" + msg.getSequenceNumber() + " Content:" + msg.getContent() + " " + msg.timestampString());
                 } else {
     	            String groupName = input.split(" ")[0];
     	            String content = input.split(" ", 2)[1]; // Update 01/28

@@ -22,4 +22,6 @@ public abstract class ClockService {
     public String getMySelf() {
         return mySelf;
     }
+
+    public abstract void increase(String name);
 }

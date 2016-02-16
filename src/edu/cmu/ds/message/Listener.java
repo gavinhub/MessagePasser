@@ -31,9 +31,9 @@ class Listener implements Runnable{
                 ObjectOutputStream oStream = new ObjectOutputStream(coming.getOutputStream());
                 oStream.writeObject(response);
                 oStream.flush();
-                MLogger.customOput("\033[36m[INFO] Connection Request Accepted\n\033[92m>> ");
                 ObjectInputStream iStream = new ObjectInputStream(coming.getInputStream());
                 Message firstMessage = (Message) iStream.readObject();
+                MLogger.customOput("\033[36m[INFO] Connection Request Accepted: "+ firstMessage.getSourceName() +"\n\033[92m>> ");
                 this.ctrl.addOutputStream(firstMessage.getSourceName(), oStream, firstMessage.getSourceName());
                 this.ctrl.appendReceivedMessage(firstMessage);
                 this.ctrl.addInputStream(firstMessage.getSourceName(), iStream, firstMessage.getSourceName());

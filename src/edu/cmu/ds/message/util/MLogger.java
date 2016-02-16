@@ -16,6 +16,8 @@ public class MLogger {
         MLogger.output(tag, content, 36);
     }
 
+    public static void message(String tag, String content) { MLogger.output(tag, content, 31);}
+
     private static void output(String tag, String content, int color) {
         System.out.println("\033[" + color + "m[" + tag + "] " + content + "\033[0m");
     }

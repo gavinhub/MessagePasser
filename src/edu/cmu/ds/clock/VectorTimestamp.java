@@ -31,7 +31,7 @@ public class VectorTimestamp implements ITimestamp, Serializable {
         this.time.put(name, number);
     }
 
-    protected int getTimeStamp(String name) {
+    public int getTimeStamp(String name) {
         return this.time.get(name);
     }
     
@@ -52,6 +52,11 @@ public class VectorTimestamp implements ITimestamp, Serializable {
     @Override
     public ITimestamp copy() {
         return new VectorTimestamp(this.mySelf, this.time);
+    }
+
+    @Override
+    public void increase(String name) {
+        time.put(name, time.get(name) + 1);
     }
 
     @Override
@@ -96,6 +101,10 @@ public class VectorTimestamp implements ITimestamp, Serializable {
         } else {
             return 1;
         }
+    }
+
+    public int compare(String name, VectorTimestamp vt) {
+        return this.getTimeStamp(name) - vt.getTimeStamp(name);
     }
 
     @Override

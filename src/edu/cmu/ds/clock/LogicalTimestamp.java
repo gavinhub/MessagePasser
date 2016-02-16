@@ -52,4 +52,8 @@ public class LogicalTimestamp implements ITimestamp, Serializable {
         a.time = this.time;
         return a;
     }
+
+    @Override
+    public void increase(String name) {
+    }
 }

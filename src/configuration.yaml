@@ -27,3 +27,8 @@ groups :
       - bob
       - charlie
 
+receiveRules :
+  - action : delay
+    src : alice
+    dest : charlie
+

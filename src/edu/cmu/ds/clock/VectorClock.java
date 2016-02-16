@@ -5,4 +5,9 @@ public class VectorClock extends ClockService {
         this.mySelf = mySelf;
         this.stamp = new VectorTimestamp(mySelf, hosts);
     }
+
+    @Override
+    public void increase(String name) {
+        stamp.increase(name);
+    }
 }

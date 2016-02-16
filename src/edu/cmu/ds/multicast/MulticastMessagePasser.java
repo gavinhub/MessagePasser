@@ -6,6 +6,7 @@ import edu.cmu.ds.clock.VectorClock;
 import edu.cmu.ds.clock.VectorTimestamp;
 import edu.cmu.ds.message.ConfigParser;
 import edu.cmu.ds.message.MessagePasser;
+import edu.cmu.ds.message.util.MLogger;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -37,9 +38,9 @@ public class MulticastMessagePasser extends MessagePasser {
         for (String target: group.getMembers()) {
             gmsg.setSourceName(getMyName());
             gmsg.setTargetName(target);
-            ///////// Test /////////
-            System.out.println("orig = " + gmsg.getOrigin() + ";\tsrc = " + gmsg.getSourceName() + ";\ttarget = " + gmsg.getTargetName() + ";\tcontent = " + gmsg.getContent());
-            ///////// End Test /////////
+
+            MLogger.info("Mu-Ca", "orig = " + gmsg.getOrigin() + ";\tsrc = " + gmsg.getSourceName() + ";\ttarget = " + gmsg.getTargetName() + ";\tcontent = " + gmsg.getContent());
+
             if (gmsg.getTimestamp() == null)
                 this.send(gmsg.copy());
             else
@@ -102,6 +103,34 @@ public class MulticastMessagePasser extends MessagePasser {
      * @return block if no message to deliver
      */
     protected GroupMessage CO_deliver() throws InterruptedException {
+        GroupMessage gmsg;
+        while ((gmsg = R_deliver()) != null) {
+            Group group = groups.get(gmsg.getGroup());
+            group.addMessage(gmsg);
+
+            /* Traversal */
+            for (int i = 0; i < group.holdback.size(); i ++) {
+                GroupMessage top = group.pollMessage();
+                if (top.getOrigin().equals(getMyName()))
+                    return top;
+                VectorTimestamp comingTime = (VectorTimestamp) top.getTimestamp();
+                if (group.getTimeStamp(top.getOrigin()) + 1 == comingTime.getTimeStamp(top.getOrigin())) {
+                    boolean valid = true;
+                    for (String member: group.getMembers()) {
+                        if (!member.equals(top.getOrigin()) && group.getTimeStamp(member) < comingTime.getTimeStamp(member)) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if (valid) {
+                        group.increaseTime(top.getOrigin());
+                        return top;
+                    }
+                } else {
+                    group.addMessage(top);
+                }
+            }
+        }
         return null;
     }
 
@@ -111,7 +140,7 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     public void multiCast(GroupMessage msg) {
         assert msg.group != null;
-        R_multicast(msg);
+        CO_multicast(msg);
     }
 
     /**
@@ -120,7 +149,7 @@ public class MulticastMessagePasser extends MessagePasser {
     public GroupMessage deliver() throws InterruptedException {
     	// for extensibility. use this method as a broker when different type of requirement is needed.
         // Currently, we use R_DELIVER
-        return R_deliver();
+        return CO_deliver();
     }
 
 }
