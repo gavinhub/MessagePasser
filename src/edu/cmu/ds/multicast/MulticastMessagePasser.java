@@ -35,14 +35,15 @@ public class MulticastMessagePasser extends MessagePasser {
         assert gmsg.group != null;
         Group group = groups.get(gmsg.getGroup());
         for (String target: group.getMembers()) {
+            gmsg.setSourceName(getMyName());
             gmsg.setTargetName(target);
             ///////// Test /////////
-            System.out.println("src = " + gmsg.getSourceName() + "\ttarget = " + gmsg.getTargetName() + "\tcontent = " + gmsg.getContent());
+            System.out.println("orig = " + gmsg.getOrigin() + ";\tsrc = " + gmsg.getSourceName() + ";\ttarget = " + gmsg.getTargetName() + ";\tcontent = " + gmsg.getContent());
             ///////// End Test /////////
-            
-            // Which one is right?
-//          this.sendTimedMessage(gmsg);
-            this.send(gmsg);
+            if (gmsg.getTimestamp() == null)
+                this.send(gmsg.copy());
+            else
+                this.sendTimedMessage(gmsg.copy());
         }
     }
 
@@ -51,6 +52,8 @@ public class MulticastMessagePasser extends MessagePasser {
      * @param gmsg msg with group
      */
     protected void R_multicast(GroupMessage gmsg) {
+        if (gmsg.getTimestamp() == null)
+            gmsg.setTimestamp(this.clock.next());
         B_multicast(gmsg);
     }
 
@@ -87,6 +90,8 @@ public class MulticastMessagePasser extends MessagePasser {
                 } else {
                     return gmsg;
                 }
+            } else if (gmsg.getSourceName().equals(this.getMyName())) {
+                return gmsg;
             }
         }
         return null;

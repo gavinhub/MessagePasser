@@ -40,9 +40,21 @@ public class GroupMessage extends Message {
      */
     public boolean equals(Object o) {
     	GroupMessage target = (GroupMessage) o;
-        if (this.getOrigin() == target.getOrigin() && this.timestamp.getTime() == target.timestamp.getTime()) {
+        if (this.getOrigin().equals(target.getOrigin()) && this.timestamp.getTime() == target.timestamp.getTime()) {
         	return true;
         }
         return false;
+    }
+
+    public GroupMessage copy() {
+        GroupMessage gm = new GroupMessage();
+        gm.sourceName = this.sourceName;
+        gm.targetName = this.targetName;
+        gm.content = this.content;
+        gm.seqNum = this.seqNum;
+        gm.timestamp = this.timestamp.copy();
+        gm.group = this.group;
+        gm.origin = this.origin;
+        return gm;
     }
 }

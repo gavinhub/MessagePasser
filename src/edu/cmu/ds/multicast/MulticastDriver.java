@@ -17,6 +17,12 @@ import edu.cmu.ds.message.MessagePasser;
 import edu.cmu.ds.message.util.MLogger;
 
 public class MulticastDriver {
+    /**
+     * arguments: configFile <VECTOR|LOGICAL> localName
+     * command:
+     *      send: groupName content
+     *      deliver: D
+     */
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException {
 		if (args.length < 2)

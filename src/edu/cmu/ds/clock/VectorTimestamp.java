@@ -50,6 +50,11 @@ public class VectorTimestamp implements ITimestamp, Serializable {
     }
 
     @Override
+    public ITimestamp copy() {
+        return new VectorTimestamp(this.mySelf, this.time);
+    }
+
+    @Override
     public ITimestamp next() {
         // Obtain next Timestamp with the help of this.mySelf
         VectorTimestamp vector = new VectorTimestamp(this.mySelf, this.time);

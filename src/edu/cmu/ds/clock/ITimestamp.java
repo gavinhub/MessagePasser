@@ -4,4 +4,5 @@ public interface ITimestamp extends Comparable{
     ITimestamp next();
     ITimestamp update(ITimestamp t);
     int getTime();
+    ITimestamp copy();
 }

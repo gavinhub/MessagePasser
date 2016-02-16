@@ -18,6 +18,13 @@ public class Message implements Serializable{
         this.seqNum = -1;
         this.timestamp = null;
     }
+    public Message(Message a) {
+        sourceName = a.sourceName;
+        targetName = a.targetName;
+        content = a.content;
+        seqNum = a.seqNum;
+        timestamp = a.timestamp.copy();
+    }
 
     public String getSourceName() {
         return sourceName;
@@ -61,5 +68,9 @@ public class Message implements Serializable{
 
     public String timestampString() {
         return timestamp.toString();
+    }
+
+    public Message copy() {
+        return new Message(this);
     }
 }

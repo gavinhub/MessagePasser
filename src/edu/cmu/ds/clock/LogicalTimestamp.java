@@ -45,4 +45,11 @@ public class LogicalTimestamp implements ITimestamp, Serializable {
     public int getTime() {
     	return time;
     }
+
+    @Override
+    public ITimestamp copy() {
+        LogicalTimestamp a = new LogicalTimestamp();
+        a.time = this.time;
+        return a;
+    }
 }

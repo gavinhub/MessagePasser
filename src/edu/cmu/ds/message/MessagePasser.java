@@ -14,7 +14,7 @@ public class MessagePasser {
 	private List<Rule> receiveRules;
     private Queue<Message> sendDelayPool;
     private Queue<Message> receiveDelayPool;
-    private ClockService clock;
+    protected ClockService clock;
 
     
     public MessagePasser(ConfigParser parser, String myName, ClockService clock) throws ParseException, FileNotFoundException{
