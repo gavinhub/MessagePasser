@@ -16,9 +16,6 @@ import edu.cmu.ds.message.Message;
 import edu.cmu.ds.message.MessagePasser;
 import edu.cmu.ds.message.util.MLogger;
 
-/**
- * Created by gavin on 2/13/16.
- */
 public class MulticastDriver {
 	
 	public static void main(String[] args) throws ParseException, FileNotFoundException {

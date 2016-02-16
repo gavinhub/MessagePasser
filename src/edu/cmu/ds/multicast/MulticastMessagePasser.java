@@ -106,7 +106,7 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     public void multiCast(GroupMessage msg) {
         assert msg.group != null;
-        CO_multicast(msg);
+        R_multicast(msg);
     }
 
     /**
