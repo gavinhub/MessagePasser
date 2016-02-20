@@ -9,22 +9,29 @@ public class Message implements Serializable{
     protected String content;
     protected int seqNum;
     protected ITimestamp timestamp;
+    protected String kind;
 
     public Message() {}
-    public Message(String src, String target, String content) {
+    public Message(String src, String target, String kind, String content) {
         this.sourceName = src;
         this.targetName = target;
         this.content = content;
         this.seqNum = -1;
         this.timestamp = null;
+        this.kind = kind;
     }
     public Message(Message a) {
         sourceName = a.sourceName;
         targetName = a.targetName;
         content = a.content;
         seqNum = a.seqNum;
+        kind = a.kind;
         timestamp = a.timestamp.copy();
     }
+
+    public String getKind() { return kind;}
+
+    public void setKind(String kind) {this.kind = kind;}
 
     public String getSourceName() {
         return sourceName;

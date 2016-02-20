@@ -78,8 +78,10 @@ public class MulticastDriver {
                             "Seq:" + msg.getSequenceNumber() + " Content:" + msg.getContent() + " " + msg.timestampString());
                 } else {
     	            String groupName = input.split(" ")[0];
-    	            String content = input.split(" ", 2)[1]; // Update 01/28
-    	            GroupMessage msg = new GroupMessage(myName, groupName, content);
+                    String kind = input.split(" ")[1];
+                    // System.out.println("Kind:" + kind);
+    	            String content = input.split(" ", 3)[2]; // Update 01/28
+    	            GroupMessage msg = new GroupMessage(myName, groupName, kind, content);
     	            passer.multiCast(msg);
                 }
             } catch (IOException | InterruptedException e) {

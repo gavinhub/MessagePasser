@@ -62,7 +62,8 @@ public class Main {
             // If a user explicitly says "log", the message will be logged.
             if (part[0].equals("log")) {
             	String content = part[1];
-            	Message logMsg = new Message(myName, "logger", content);
+                String kind = part[2];
+            	Message logMsg = new Message(myName, "logger", kind, content);
             	passer.send(logMsg);
             }
             // ********* End log test *********
@@ -71,8 +72,9 @@ public class Main {
                 MLogger.info(msg.getSourceName() + " " + msg.getSequenceNumber(), msg.getContent() + " " + msg.timestampString());
             } else {            
 	            String name = input.split(" ")[0];
-	            String content = input.split(" ", 2)[1]; // Update 01/28
-	            Message msg = new Message(myName, name, content);
+                String kind = input.split(" ")[1];
+	            String content = input.split(" ", 3)[2]; // Update 01/28
+	            Message msg = new Message(myName, name, kind, content);
 	            passer.send(msg);
             }
         } catch (IOException | InterruptedException e) {

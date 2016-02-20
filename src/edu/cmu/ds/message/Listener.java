@@ -27,7 +27,7 @@ class Listener implements Runnable{
                 Socket coming = this.server.accept();
 
                 // response
-                Message response = new Message(this.ctrl.getMyName(), "unknown", "Connect");
+                Message response = new Message(this.ctrl.getMyName(), "unknown", "unknown", "Connect");
                 ObjectOutputStream oStream = new ObjectOutputStream(coming.getOutputStream());
                 oStream.writeObject(response);
                 oStream.flush();

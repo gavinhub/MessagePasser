@@ -11,9 +11,6 @@ configuration :
   - name : deadpool
     ip : 127.0.0.1
     port : 1987
-  - name : logger
-    ip : 127.0.0.1
-    port : 2006
 
 groups :
   - name : Group1
@@ -24,11 +21,20 @@ groups :
   - name : Group2
     members :
       - deadpool
-      - bob
-      - charlie
 
-receiveRules :
+sendRules :
   - action : delay
     src : alice
+    kind : delay
+
+  - action : drop
+    src : alice
     dest : charlie
+    kind : drop
+
+receiveRules :
+  - action : drop
+    src : alice
+    dest : bob
+    kind : drop2
 

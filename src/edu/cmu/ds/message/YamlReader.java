@@ -46,6 +46,8 @@ class YamlReader {
             Rule rule = new Rule(act);
             rule.dest = (String)map.get("dest");
             rule.src = (String)map.get("src");
+            rule.kind = (String)map.get("kind");
+            // System.out.println("Get kind" + rule.kind);
             Integer seqNum = (Integer)map.get("seqNum");
             if (act == Rule.Action.DROPAFTER)
                 rule.seqNum = seqNum;

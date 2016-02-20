@@ -10,8 +10,8 @@ public class GroupMessage extends Message{
 
     public GroupMessage() {}
 
-    public GroupMessage(String src, String group, String content) {
-        super(src, null, content);
+    public GroupMessage(String src, String group, String kind, String content) {
+        super(src, null, kind, content);
         this.group = group;
         
         /* 
@@ -57,6 +57,7 @@ public class GroupMessage extends Message{
         gm.timestamp = this.timestamp.copy();
         gm.group = this.group;
         gm.origin = this.origin;
+        gm.kind = this.kind;
         return gm;
     }
 
