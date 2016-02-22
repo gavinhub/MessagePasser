@@ -16,6 +16,7 @@ public class ConfigParser {
     private Map<String, Host> hosts;
 	private String filename;
     private ArrayList<Group> groups;
+	private Map<String, String> mapping;
 
     public ConfigParser(String configFile) throws ParseException, FileNotFoundException {
 		this.filename = configFile;
@@ -31,6 +32,12 @@ public class ConfigParser {
     	for (Map<String, Object> person : config) {
     		String name = (String)person.get("name");
     		String ip = (String)person.get("ip");
+			String memberOf = (String)person.get("memberOf");
+			if (memberOf != null) {
+				mapping.put(name, memberOf);
+			} else {
+				throw new ParseException("no memberOf", 0);
+			}
     		Host host = null;
 			try {
 				host = new Host(InetAddress.getByName(ip), name, (int)person.get("port"));
@@ -41,6 +48,9 @@ public class ConfigParser {
     	}
     	
         groups = reader.getGroups(filename);
+
+		/* member of */
+
     }
 
 
@@ -64,7 +74,7 @@ public class ConfigParser {
 	 * @return groups containing this member
      */
 	public List<Group> getMyGroups(String myName) {
-		List<Group> myGroup = new ArrayList<Group>();
+		List<Group> myGroup = new ArrayList<>();
         for (Group g : groups) {
         	if (g.getMembers().contains(myName)) {
 				g.setMySelf(myName);
@@ -79,6 +89,6 @@ public class ConfigParser {
 	}
 
 	public String getMuxGroup(String myName) {
-		// TODO: get dedicated group.  `memberOf'
+		return mapping.get(myName);
 	}
 }

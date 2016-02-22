@@ -30,8 +30,8 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
         this.dedicatedGroup = parser.getMuxGroup(passer.getMyName());
         this.cs = cs;
         this.isInCs = false;
-        this.vote = this.vote.UNVOTED;
-        this.ackSet = new HashSet<String>();
+        this.vote = VOTE.UNVOTED;
+        this.ackSet = new HashSet<>();
     }
 
     /**
