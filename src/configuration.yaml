@@ -2,15 +2,32 @@ configuration :
   - name : alice
     ip : 127.0.0.1
     port : 12344
+    memberOf : Group1
   - name : bob
     ip : 127.0.0.1
     port : 14255
+    memberOf : Group2
   - name : charlie
     ip : 127.0.0.1
     port : 12998
-  - name : deadpool
+    memberOf : Group3
+  - name : david
     ip : 127.0.0.1
-    port : 1987
+    port : 198732
+    memberOf : Group4
+  - name : eve
+    ip : 127.0.0.1
+    port : 198723
+    memberOf : Group5
+  - name : frank
+    ip : 127.0.0.1
+    port : 198744
+    memberOf : Group6
+  - name : green
+    ip : 127.0.0.1
+    port : 198765
+    memberOf : Group7
+
 
 groups :
   - name : Group1
@@ -20,21 +37,48 @@ groups :
       - charlie
   - name : Group2
     members :
-      - deadpool
+      - bob
+      - david
+      - frank
+  - name : Group3
+    members :
+      - charlie
+      - eve
+      - frank
+  - name : Group4
+    members :
+      - alice
+      - david
+      - eve
+  - name : Group5
+    members :
+      - bob
+      - eve
+      - green
+  - name : Group6
+    members :
+      - alice
+      - frank
+      - green
+  - name : Group7
+    members :
+      - charlie
+      - david
+      - green
 
-sendRules :
-  - action : delay
-    src : alice
-    kind : delay
-
-  - action : drop
-    src : alice
-    dest : charlie
-    kind : drop
-
-receiveRules :
-  - action : drop
-    src : alice
-    dest : bob
-    kind : drop2
+#sendRules :
+#  - action : delay
+#    src : alice
+#    kind : delay
+#
+#  - action : drop
+#    src : alice
+#    dest : charlie
+#    kind : drop
+#
+#receiveRules :
+#  - action : drop
+#    src : alice
+#    dest : bob
+#    kind : drop2
 

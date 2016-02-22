@@ -60,7 +60,7 @@ public class ConfigParser {
 	/**
 	 * return groups that contains this member
      * Note that a user may belong to several groups.     
-	 * @param member the member name
+	 * @param myName the member name
 	 * @return groups containing this member
      */
 	public List<Group> getMyGroups(String myName) {
@@ -76,5 +76,9 @@ public class ConfigParser {
 
 	public String getFileName() {
 		return this.filename;
+	}
+
+	public String getMuxGroup(String myName) {
+		// TODO: get dedicated group.  `memberOf'
 	}
 }

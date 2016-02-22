@@ -3,7 +3,6 @@ package edu.cmu.ds.message;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +46,7 @@ class YamlReader {
             rule.dest = (String)map.get("dest");
             rule.src = (String)map.get("src");
             rule.kind = (String)map.get("kind");
-            // System.out.println("Get kind" + rule.kind);
-            Integer seqNum = (Integer)map.get("seqNum");
-            if (act == Rule.Action.DROPAFTER)
-                rule.seqNum = seqNum;
+            rule.seqNum = (Integer)map.get("seqNum");
             rules.add(rule);
         }
         return rules;
