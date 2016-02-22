@@ -12,9 +12,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Group {
     private String groupName;
+    private String myName;
     private List<String> members;
     private VectorClock clock;
     public Queue<GroupMessage> holdback = new LinkedBlockingQueue<>();
+    public int selfReceive = 0;
 
     public Group() {}
 
@@ -59,7 +61,40 @@ public class Group {
         holdback.add(gm);
     }
 
-    public GroupMessage pollMessage() {
-        return holdback.poll();
+    public GroupMessage fetchQueuedMessage() {
+        int qSize = holdback.size();
+        for (int i = 0; i < qSize; i ++) {
+            GroupMessage top = holdback.poll();
+            VectorTimestamp ctime = (VectorTimestamp) top.getTimestamp();
+
+            if (top.getOrigin().equals(myName) && selfReceive + 1 == ctime.getTimeStamp(myName)) {
+                selfReceive += 1;
+                return top;
+            }
+
+            else if (getTimeStamp(top.getOrigin()) + 1 == ctime.getTimeStamp(top.getOrigin())) {
+                boolean valid = true;
+                for (String member: getMembers()) {
+                    if (!member.equals(top.getOrigin()) && getTimeStamp(member) < ctime.getTimeStamp(member)) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid) {
+                    increaseTime(top.getOrigin());
+                    return top;
+                }
+            }
+
+            else {
+                addMessage(top);
+            }
+        }
+
+        return null;
+    }
+
+    public void setMySelf(String mySelf) {
+        this.myName = mySelf;
     }
 }

@@ -17,7 +17,8 @@ public class MulticastMessagePasser extends MessagePasser {
     private Map<String, Group> groups = new HashMap<>();
     private Set<GroupMessage> received;
 
-    public MulticastMessagePasser(ConfigParser parser, String myName, ClockService uniClock) throws ParseException, FileNotFoundException {
+    public MulticastMessagePasser(ConfigParser parser, String myName, ClockService uniClock)
+            throws ParseException, FileNotFoundException {
         super(parser, myName, uniClock);
         List<Group> groups = parser.getMyGroups(myName);
         received = new HashSet<>();
@@ -39,7 +40,11 @@ public class MulticastMessagePasser extends MessagePasser {
             gmsg.setSourceName(getMyName());
             gmsg.setTargetName(target);
 
-            MLogger.info("Mu-Ca", "orig = " + gmsg.getOrigin() + ";\tsrc = " + gmsg.getSourceName() + ";\ttarget = " + gmsg.getTargetName() + ";\tcontent = " + gmsg.getContent() + "; kind=" + gmsg.getKind());
+            MLogger.info("Mu-Ca", "orig = " + gmsg.getOrigin()
+                    + ";\tsrc = " + gmsg.getSourceName()
+                    + ";\ttarget = " + gmsg.getTargetName()
+                    + ";\tcontent = " + gmsg.getContent()
+                    + "; kind=" + gmsg.getKind());
 
             if (gmsg.getTimestamp() == null)
                 this.send(gmsg.copy());
@@ -104,31 +109,21 @@ public class MulticastMessagePasser extends MessagePasser {
      */
     protected GroupMessage CO_deliver() throws InterruptedException {
         GroupMessage gmsg;
+
+        for (String grp: groups.keySet()) {
+            gmsg = groups.get(grp).fetchQueuedMessage();
+            if (gmsg != null)
+                return gmsg;
+        }
+
         while ((gmsg = R_deliver()) != null) {
             Group group = groups.get(gmsg.getGroup());
             group.addMessage(gmsg);
 
-            /* Traversal */
-            for (int i = 0; i < group.holdback.size(); i ++) {
-                GroupMessage top = group.pollMessage();
-                if (top.getOrigin().equals(getMyName()))
-                    return top;
-                VectorTimestamp comingTime = (VectorTimestamp) top.getTimestamp();
-                if (group.getTimeStamp(top.getOrigin()) + 1 == comingTime.getTimeStamp(top.getOrigin())) {
-                    boolean valid = true;
-                    for (String member: group.getMembers()) {
-                        if (!member.equals(top.getOrigin()) && group.getTimeStamp(member) < comingTime.getTimeStamp(member)) {
-                            valid = false;
-                            break;
-                        }
-                    }
-                    if (valid) {
-                        group.increaseTime(top.getOrigin());
-                        return top;
-                    }
-                } else {
-                    group.addMessage(top);
-                }
+            for (String grp: groups.keySet()) {
+                gmsg = groups.get(grp).fetchQueuedMessage();
+                if (gmsg != null)
+                    return gmsg;
             }
         }
         return null;
@@ -151,5 +146,7 @@ public class MulticastMessagePasser extends MessagePasser {
         // Currently, we use R_DELIVER
         return CO_deliver();
     }
+
+
 
 }

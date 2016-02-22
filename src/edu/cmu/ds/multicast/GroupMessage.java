@@ -61,4 +61,8 @@ public class GroupMessage extends Message{
         return gm;
     }
 
+    public String toString() {
+        return this.content;
+    }
+
 }

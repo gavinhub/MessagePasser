@@ -67,6 +67,7 @@ public class ConfigParser {
 		List<Group> myGroup = new ArrayList<Group>();
         for (Group g : groups) {
         	if (g.getMembers().contains(myName)) {
+				g.setMySelf(myName);
         		myGroup.add(g);
         	}
         }
