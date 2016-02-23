@@ -34,13 +34,13 @@ public class MuxDriver {
         String myName = args[1];
 
         ClockServiceFactory factory = new ClockServiceFactory();
-        ConfigParser config = null;
+        ConfigParser config;
         ILocker locker;
         CriticalSection cs = new CriticalSection();
         try {
             config = new ConfigParser(configFile);
             ClockService clock = factory.getClockService("VECTOR", myName, config.getHostArray());
-//            MulticastMessagePasser passer = new MulticastMessagePasser(config, myName, clock);
+
             locker =  new ResLocker(config, myName, clock, cs);
         } catch (ParseException | FileNotFoundException e) {
             MLogger.error("Parsing", "File error");
@@ -78,10 +78,18 @@ public class MuxDriver {
                 if (input.trim().equals("")) {
                     continue;
                 } else if (input.equals("REQ")) {
-                    locker.request();
+                    if (locker.request()) {
+                        MLogger.message("Request", "Request sent");
+                    } else {
+                        MLogger.message("Request", "Requesting, Please wait.");
+                    }
 
                 } else if (input.equals("RLS")) {
-                    locker.release();
+                    if (locker.release()) {
+                        MLogger.message("Release", "Release sent");
+                    } else {
+                        MLogger.message("Release", "Waiting.");
+                    }
                 } else if (input.equals("INFO")) {
                     locker.info();
                 }
