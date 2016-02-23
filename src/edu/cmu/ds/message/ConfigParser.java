@@ -21,6 +21,7 @@ public class ConfigParser {
     public ConfigParser(String configFile) throws ParseException, FileNotFoundException {
 		this.filename = configFile;
         hosts = new HashMap<>();
+        mapping = new HashMap<>();
         parse(configFile);
         MLogger.log("CONFIG", "Config Complete, " + hosts.size() + " hosts configured.");
     }

@@ -28,7 +28,7 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 	private boolean isRequesting;
 	//	private VOTE vote; // Is going to be deleted
 	private Set<String> ackSet;
-	private PriorityQueue<String> queue;
+	private PriorityQueue<GroupMessage> queue;
 
 	public ResLocker(ConfigParser parser, String myName, ClockService uniClock, CriticalSection cs) throws FileNotFoundException, ParseException {
 		super(parser, myName, uniClock);
@@ -38,7 +38,7 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 		this.isRequesting = false;
 		//    	this.vote = VOTE.UNVOTED;
 		this.ackSet = new HashSet<String>();
-		this.queue = new PriorityQueue<String>();
+		this.queue = new PriorityQueue<GroupMessage>();
 	}
 
 	/**
@@ -49,35 +49,26 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 	@Override
 	public boolean request() throws InterruptedException {
 		if (this.isRequesting) {
-			MLogger.info("CS", "Already in Requesting");
-			return false;
-		}
-		
-		if (isInCs) {
-			MLogger.info("CS", "Already in Critical Section");
+			MLogger.info("Locker", "Already in Requesting");
 			return false;
 		}
 
 		// String src, String group, String kind, String content
 		GroupMessage gmsg = new GroupMessage(this.getMyName(), 
 				this.dedicatedGroup,
-				"", // What the kind is?
+				"",
 				"REQUEST");
+		
+		if (isInCs || cs.getIsInCs()) {
+			MLogger.info("Locker", "Enque");
+			queue.add(gmsg);
+			return false;
+		}
+
 		R_multicast(gmsg);
 		this.isRequesting = true;
 
 		return true;
-		/* 
-		 *  Wait until getting all the ACK.
-		 *
-		while (this.ackSet.size() < 3) {
-			handleReceivedMessage();
-		}
-		this.cs.enterCs(this.getMyName());
-		this.isInCs = true;
-		return true;
-		*/
-
 	}
 
 	/**
@@ -91,7 +82,10 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 		}
 		this.isInCs = false;
 		this.ackSet.clear();
-		this.cs.leaveCs();
+//		this.cs.leaveCs();
+		
+		sendNotification("RELEASE");
+
 		return true;
 	}
 
@@ -100,11 +94,9 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 	 */
 	public void handleReceivedMessage() throws InterruptedException {
 		GroupMessage gmsg = R_deliver();
-//		MLogger.info("1", "ori = " + gmsg.getOrigin() + "\tsrc = " + gmsg.getSourceName() + "\ttarget = " + gmsg.getTargetName());
-//		Message gmsg = receive();
 		if (gmsg.getContent().equals("REQUEST")) {
-			if (this.isInCs) {
-				queue.add(gmsg.getSourceName());
+			if (this.isInCs || cs.getIsInCs()) {
+				queue.add(gmsg);
 			} else {
 				sendAck(gmsg);
 			}
@@ -112,54 +104,55 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 			if (this.isRequesting) {
 				this.ackSet.add(gmsg.getOrigin());
 				///////// Test /////////
-				MLogger.info("CS", "receive ACK from " + gmsg.getOrigin() + " ACK number: " + this.ackSet.size());
+				MLogger.info("Locker", "receive ACK from " + gmsg.getOrigin() + "; ACK number: " + this.ackSet.size());
 				///////// End Test /////////
-				if (this.ackSet.size() == 3) {
-					this.cs.enterCs(this.getMyName());
+				if (this.ackSet.size() == 3 && !this.isInCs) {
+//					this.cs.enterCs(this.getMyName());
 					this.isInCs = true;
 					this.isRequesting = false;
+					sendNotification("CS");
 				}
-					
-	//			this.ackSet.add(gmsg.getOrigin());
+			}
+		} else if (gmsg.getContent().equals("CS")) {
+			cs.enterCs(gmsg.getOrigin());
+		} else if (gmsg.getContent().equals("RELEASE")) {
+			cs.leaveCs();
+			if (!queue.isEmpty()) {
+				GroupMessage head = queue.poll();
+				R_multicast(head);				
+				this.isRequesting = true;
 			}
 		}
-
 	}
-
 
 	/**
 	 *  Send ACK to all the members in the group by using R_multicast.
 	 */
 	public void sendAck(GroupMessage gmsg) {
-		if (!isInCs) {
-			
-			// String src, String target, String kind, String content
-			GroupMessage msg = new GroupMessage(this.getMyName(),
-					gmsg.getGroup(),
-					"", // What the kind is?
-					"ACK");
-			msg.setTargetName(gmsg.getOrigin());
-//			System.out.println("1");
-			
-			send(msg);
-		} 
-	}
+		// String src, String target, String kind, String content
+		GroupMessage msg = new GroupMessage(this.getMyName(),
+				gmsg.getGroup(),
+				"", // What the kind is?
+				"ACK");
+		msg.setTargetName(gmsg.getOrigin());
+		MLogger.info("RELEASE", "send ACK from " + msg.getOrigin() + " to " + msg.getTargetName());
 
-	/**
-	 *  Use R_deliver to receive ACK.
-	 */
-	/*
-	public void receiveAck() throws InterruptedException {
-		GroupMessage gmssg = R_deliver();
-		if (gmsg.getContent().equals("ACK")) {
-			
-			///////// Test /////////
-			MLogger.info("CS", "receive ACK from " + gmsg.getSourceName());
-			///////// End Test /////////
-			
-			this.ackSet.add(gmsg.getOrigin());
-		}
+		send(msg);
+
 	}
+	
+	/**
+	 *  Send notification (process gets in critical section or leave critical section)
+	 *  to all the members in the group by using R_multicast.
+	 */
+	protected void sendNotification(String notification) {
+		GroupMessage gmsg = new GroupMessage(this.getMyName(), 
+				this.dedicatedGroup,
+				"", // What the kind is?
+				notification);
+		R_multicast(gmsg);
+	}
+	
 
 	/**
 	 * Info - show information
@@ -169,9 +162,9 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 	@Override
 	public void info() {
 		if (cs.getIsInCs()) {
-			MLogger.info("Critical Section", cs.getProcessName() + " is currently in Critical Section");
+			MLogger.info("Locker", cs.getProcessName() + " is currently in Critical Section");
 		} else {
-			
+			MLogger.info("Locker", "There is no process currently in CS");
 		}
 	}
 }

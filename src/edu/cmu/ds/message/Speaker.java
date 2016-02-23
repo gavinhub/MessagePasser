@@ -37,7 +37,7 @@ class Speaker implements Runnable {
                     Thread session = new Thread(new ListenSession(this.ctrl, name, iStream));
                     session.start();
                 }
-                MLogger.info("Speaker", "Write out " + msg.toString());
+//                MLogger.info("Speaker", "Write out " + msg.toString());
                 oStream.writeObject(msg);
             } catch (IOException | ClassNotFoundException e) {
                 if (e instanceof ConnectException) {

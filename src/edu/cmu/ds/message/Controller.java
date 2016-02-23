@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 
-class Controller {
+public class Controller {
     private Map<String, Host> hosts;
     private String myName;
     private BlockingQueue<Message> sendQueue; // Speaker will send out all messages in this queue

@@ -88,6 +88,7 @@ public class MessagePasser {
      */
     public void send(Message msg) {
         msg.setTimestamp(this.clock.next());
+        System.out.println("Send from " + msg.getSourceName() + " to " + msg.getTargetName());
         sendTimedMessage(msg);
     }
 
