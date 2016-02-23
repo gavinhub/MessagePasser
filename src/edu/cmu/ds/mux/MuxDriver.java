@@ -40,14 +40,31 @@ public class MuxDriver {
         try {
             config = new ConfigParser(configFile);
             ClockService clock = factory.getClockService("VECTOR", myName, config.getHostArray());
-            MulticastMessagePasser passer = new MulticastMessagePasser(config, myName, clock);
+//            MulticastMessagePasser passer = new MulticastMessagePasser(config, myName, clock);
             locker =  new ResLocker(config, myName, clock, cs);
         } catch (ParseException | FileNotFoundException e) {
             MLogger.error("Parsing", "File error");
             e.printStackTrace();
             return;
         }
-
+        
+        
+        Thread receiver = new Thread() {
+            public void run() {
+                while(true) {
+                    try {
+                    	locker.handleReceivedMessage();
+                    } catch (InterruptedException e) {
+                    	System.out.println("Interrupted");
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+            }
+        };
+        receiver.start();
+        
+        
         BufferedReader keyIn = new BufferedReader(new InputStreamReader(System.in));
         while (true)
             try {

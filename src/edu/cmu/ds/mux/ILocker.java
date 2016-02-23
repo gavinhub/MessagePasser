@@ -7,4 +7,5 @@ public interface ILocker {
     boolean request() throws InterruptedException;
     boolean release();
     void info();
+    public void handleReceivedMessage() throws InterruptedException;
 }
