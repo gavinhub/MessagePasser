@@ -60,18 +60,12 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 			MLogger.info("Locker", "Already in Requesting");
 			return false;
 		}
-
+		this.ackSet.clear();
 		// String src, String group, String kind, String content
 		GroupMessage gmsg = new GroupMessage(this.getMyName(), 
 				this.dedicatedGroup,
 				"",
 				"REQUEST");
-		
-		if (isInCs || cs.getIsInCs()) {
-			MLogger.info("Locker", "Enque");
-			queue.add(gmsg);
-			return false;
-		}
 
 		R_multicast(gmsg);
 		this.isRequesting = true;
@@ -114,9 +108,7 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 			if (this.isRequesting) {
 				if (dedicatedGroupMembers.contains(gmsg.getOrigin())) {
 					this.ackSet.add(gmsg.getOrigin());
-					///////// Test /////////
 					MLogger.info("Locker", "receive ACK from " + gmsg.getOrigin() + "; ACK number: " + this.ackSet.size());
-					///////// End Test /////////
 					if (this.ackSet.size() == 3 && !this.isInCs) {
 						this.isInCs = true;
 						this.isRequesting = false;
@@ -135,6 +127,7 @@ public class ResLocker extends MulticastMessagePasser implements ILocker {
 				isVoted = true;
 			} else {
 				isVoted = false;
+				this.isRequesting = false;
 			}
 		}
 	}

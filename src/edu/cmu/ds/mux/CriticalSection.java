@@ -19,7 +19,7 @@ public class CriticalSection {
 	}
 	
 	protected void leaveCs() {
-		MLogger.message("Critical Section", this.currentProcess + " is curretnly leaving the Critical Section");
+		MLogger.message("Critical Section", this.currentProcess + " has already left the Critical Section");
 		CriticalSection.isInCs = false;
 		this.currentProcess = null;
 	}
