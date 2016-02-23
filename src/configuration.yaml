@@ -1,7 +1,7 @@
 configuration :
   - name : alice
     ip : 127.0.0.1
-    port : 12344
+    port : 12345
     memberOf : Group1
   - name : bob
     ip : 127.0.0.1
@@ -13,19 +13,19 @@ configuration :
     memberOf : Group3
   - name : david
     ip : 127.0.0.1
-    port : 198732
+    port : 19873
     memberOf : Group4
   - name : eve
     ip : 127.0.0.1
-    port : 198723
+    port : 19872
     memberOf : Group5
   - name : frank
     ip : 127.0.0.1
-    port : 198744
+    port : 14456
     memberOf : Group6
   - name : green
     ip : 127.0.0.1
-    port : 198765
+    port : 19876
     memberOf : Group7
 
 
@@ -65,20 +65,3 @@ groups :
       - charlie
       - david
       - green
-
-#sendRules :
-#  - action : delay
-#    src : alice
-#    kind : delay
-#
-#  - action : drop
-#    src : alice
-#    dest : charlie
-#    kind : drop
-#
-#receiveRules :
-#  - action : drop
-#    src : alice
-#    dest : bob
-#    kind : drop2
-

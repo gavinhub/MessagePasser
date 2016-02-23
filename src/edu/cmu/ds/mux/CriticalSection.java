@@ -6,10 +6,10 @@ import edu.cmu.ds.message.util.MLogger;
 
 public class CriticalSection {
 	private String currentProcess; // Used to indicate which process are currently in CS.
-	private static Boolean isInCs = false; // Used to indicate that some process is in CS.
+	private static Boolean isInCs; // Used to indicate that some process is in CS.
 	
 	public CriticalSection() {
-//		this.isInCs = false;
+		CriticalSection.isInCs = false;
 	}
 	
 	protected void enterCs(String name) {

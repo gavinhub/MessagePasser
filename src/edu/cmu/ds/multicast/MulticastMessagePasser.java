@@ -40,12 +40,13 @@ public class MulticastMessagePasser extends MessagePasser {
             gmsg.setSourceName(getMyName());
             gmsg.setTargetName(target);
 
+            /*
             MLogger.info("Mu-Ca", "orig = " + gmsg.getOrigin()
                     + ";\tsrc = " + gmsg.getSourceName()
                     + ";\ttarget = " + gmsg.getTargetName()
                     + ";\tcontent = " + gmsg.getContent()
                     + "; kind=" + gmsg.getKind());
-
+			*/
             if (gmsg.getTimestamp() == null)
                 this.send(gmsg.copy());
             else

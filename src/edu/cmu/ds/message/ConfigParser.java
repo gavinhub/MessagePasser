@@ -92,4 +92,16 @@ public class ConfigParser {
 	public String getMuxGroup(String myName) {
 		return mapping.get(myName);
 	}
+	
+	public List<String> getMuxGroupMembers(String myName) {
+		String groupName = getMuxGroup(myName);
+		
+		List<String> members = null;
+		for (Group g : groups) {
+			if (groupName.equals(g.getName())) {
+				members = g.getMembers();
+			} 
+		}
+		return members;
+	}
 }
